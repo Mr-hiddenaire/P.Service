@@ -1,0 +1,10 @@
+/node_modules
+/public/storage
+/storage/*
+/.idea
+Homestead.json
+Homestead.yaml
+
+.env
+config/fembed.php
+config/webdriver.php

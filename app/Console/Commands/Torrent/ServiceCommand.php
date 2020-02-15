@@ -121,7 +121,7 @@ class ServiceCommand extends Command
         // all type of source should be reformated, but for asia type, images can be used directly.and for euro type, images should be reformated cause of hotlink forbidden
         switch ($data['type']) {
             case Common::IS_AISA:
-                $data['torrent_url'] = env('P_SCRAWLER_URL').'/images/'.$data['torrent_url'];
+                $data['torrent_url'] = env('P_SCRAWLER_URL').'/torrent/'.$data['torrent_url'];
                 break;
             case Common::IS_EURO:
                 $data['thumb_url'] = env('P_SCRAWLER_URL').'/images/'.$data['thumb_url'];

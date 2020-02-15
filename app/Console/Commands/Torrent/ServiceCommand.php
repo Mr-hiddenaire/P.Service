@@ -61,6 +61,7 @@ class ServiceCommand extends Command
         
         if (!$asyncLog) {
             $rawSource = $this->getOneRawSource($asyncLog);
+            dd($rawSource);
             $tDownloadRes = $this->tDownload($rawSource);
             
             if (!$tDownloadRes) {
@@ -140,44 +141,18 @@ class ServiceCommand extends Command
     
     private function getOneRawSource($asyncLog)
     {
+        $rdmn = $this->randType();
+        
         if ($asyncLog) {
-            $where = [['id', '>', $asyncLog['id']], ['type', '=', 2]];
+            $where = [['id', '>', $asyncLog['id']], ['type', '=', $rdmn]];
         } else {
-            $where = [['id', '>', 0], ['type', '=', 2]];
+            $where = [['id', '>', 0], ['type', '=', $rdmn]];
         }
         
         $data = $this->contentsService->getInfo($where, ['*'], ['id', 'ASC']);
         
         return $data;
     }
-    
-    /**
-    private function getOneRawSourceForAsia($asyncLog)
-    {
-        if ($asyncLog) {
-            $where = [['id', '>', $asyncLog['id']], ['type', '=', Common::IS_AISA]];
-        } else {
-            $where = [['id', '>', 0], ['type', '=', Common::IS_AISA]];
-        }
-        
-        $data = $this->contentsService->getInfo($where, ['*'], ['id', 'ASC']);
-        
-        return $data;
-    }
-    
-    private function getOneRawSourceForEuro($asyncLog)
-    {
-        if ($asyncLog) {
-            $where = [['id', '>', $asyncLog['id']], ['type', '=', Common::IS_EURO]];
-        } else {
-            $where = [['id', '>', 0], ['type', '=', Common::IS_EURO]];
-        }
-        
-        $data = $this->contentsService->getInfo($where, ['*'], ['id', 'ASC']);
-        
-        return $data;
-    }
-    */
     
     private function getAsyncLog()
     {
@@ -193,5 +168,12 @@ class ServiceCommand extends Command
         }
         
         return $result;
+    }
+    
+    private function randType()
+    {
+        $rdmn = rand(Common::IS_AISA, Common::IS_EURO);
+        
+        return $rdmn;
     }
 }

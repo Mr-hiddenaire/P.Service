@@ -10,7 +10,7 @@ use App\Services\SourceFactory\AsyncLogService;
 use App\Constants\Common;
 use App\Tools\ImagesUploader;
 
-use Illuminate\Support\Facades\Log;
+#use Illuminate\Support\Facades\Log;
 
 class ServiceCommand extends Command
 {

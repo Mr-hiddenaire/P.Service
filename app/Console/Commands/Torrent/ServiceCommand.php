@@ -157,7 +157,7 @@ class ServiceCommand extends Command
         $data = $this->contentsService->getInfo($where, ['*'], ['id', 'ASC']);
         
         if ($data) {
-            $this->contentsService->modify([['id', '=', $data['id']]], ['pick_up_status' => Common::IS_PICKED_UP]);
+            $this->contentsService->modify([['id', '=', $data['id']]], ['pick_up_status' => Common::IS_PICKED_UP, 'pick_up_time' => time()]);
         }
         
         return $data;

@@ -18,4 +18,9 @@ class ContentsService extends BaseService
     {
         return $this->contentsModel->getInfo($where, $fields, $orderBy);
     }
+    
+    public function modify($where, array $data)
+    {
+        return $this->contentsModel->modify($where, $data);
+    }
 }

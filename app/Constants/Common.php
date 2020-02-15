@@ -17,4 +17,8 @@ class Common
     const IS_NOT_SYNC = 1;
     
     const MAX_PAGE_SIZE = 100;
+    
+    const IS_PICKED_UP = 1;
+    
+    const IS_NOT_PICKED_UP = 0;
 }

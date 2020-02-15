@@ -23,4 +23,9 @@ class ContentsModel extends BaseModel
             return [];
         }
     }
+    
+    public function modify($where, array $data)
+    {
+        return self::where($where)->update($data);
+    }
 }

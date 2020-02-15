@@ -152,13 +152,13 @@ class ServiceCommand extends Command
     {
         $rdmn = $this->randType();
         
-        if ($asyncLog) {
-            $where = [['id', '>', $asyncLog['id']], ['type', '=', $rdmn]];
-        } else {
-            $where = [['id', '>', 0], ['type', '=', $rdmn]];
-        }
+        $where = [['pick_up_status', '=', Common::IS_NOT_PICKED_UP], ['type', '=', $rdmn]];
         
         $data = $this->contentsService->getInfo($where, ['*'], ['id', 'ASC']);
+        
+        if ($data) {
+            $this->contentsService->modify([['id', '=', $data['id']]], ['pick_up_status' => Common::IS_PICKED_UP]);
+        }
         
         return $data;
     }

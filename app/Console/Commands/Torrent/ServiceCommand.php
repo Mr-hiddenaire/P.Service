@@ -60,64 +60,76 @@ class ServiceCommand extends Command
         $asyncLog = $this->getAsyncLog();
         
         if (!$asyncLog) {
-            $rawSource = $this->getOneRawSource($asyncLog);
-            dd($rawSource);
-            $tDownloadRes = $this->tDownload($rawSource);
+            $rawSource = $this->pickUpOneItem($asyncLog);
             
-            if (!$tDownloadRes) {
-                Log::info('Torrent file download fail-1 ('.$rawSource['torrent_url'].')');
+            if ($rawSource) {
+                $this->asyncLogService->addAsyncLog(['content' => json_encode($rawSource), 'status' => Common::ASYNC_LOG_NOT_HANDLE]);
             }
-            
-            $rawSource = $this->thumbReset($rawSource);
-            
-            $this->asyncLogService->addAsyncLog(['content' => json_encode($rawSource), 'status' => Common::ASYNC_LOG_NOT_HANDLE]);
         } else {
             if ($asyncLog['status'] == Common::ASYNC_LOG_HANDLE_FINISH) {
-                $rawSource = $this->getOneRawSource($asyncLog['content']);
+                $rawSource = $this->pickUpOneItem($asyncLog);
                 
-                $tDownloadRes = $this->tDownload($rawSource);
-                
-                if (!$tDownloadRes) {
-                    Log::info('Torrent file download fail-2 ('.$rawSource['torrent_url'].')');
+                if ($rawSource) {
+                    $this->asyncLogService->updateAsyncLog([['id', '=', $asyncLog['id']]], ['content' => json_encode($rawSource), 'status' => Common::ASYNC_LOG_NOT_HANDLE]);
                 }
-                
-                $rawSource = $this->thumbReset($rawSource);
-                $this->asyncLogService->updateAsyncLog([['id', '=', $asyncLog['id']]], ['content' => json_encode($rawSource), 'status' => Common::ASYNC_LOG_NOT_HANDLE]);
             }
         }
         
         return true;
     }
     
-    private function tDownload($rawSource)
+    private function pickUpOneItem($asyncLog)
     {
-        if (file_exists(env('STATISTICS_SCRAWLER_DIRECTORY').DIRECTORY_SEPARATOR.'torrent'.DIRECTORY_SEPARATOR.$rawSource['torrent_url'])) {
-            $resourceHandler = fopen(env('STATISTICS_SCRAWLER_DIRECTORY').DIRECTORY_SEPARATOR.'torrent'.DIRECTORY_SEPARATOR.$rawSource['torrent_url'], 'rb');
-            
-            $targetHandler = fopen(env('TORRENT_WATCH_DIRECTORY').DIRECTORY_SEPARATOR.pathinfo($rawSource['torrent_url'])['filename'].'.torrent', 'wb');
-            
-            if ($resourceHandler === false || $targetHandler === false) {
-                
-                throw new \Exception('Cant open file');
-            }
-            
-            while (!feof($resourceHandler)) {
-                if (fwrite($targetHandler, fread($resourceHandler, 1024)) === false) {
-                    
-                    throw new \Exception('Cant write file');
-                }
-            }
-            
-            @unlink(env('STATISTICS_SCRAWLER_DIRECTORY').DIRECTORY_SEPARATOR.'torrent'.DIRECTORY_SEPARATOR.$rawSource['torrent_url']);
-            
-            fclose($resourceHandler);
-            
-            fclose($targetHandler);
-            
-            return true;
+        $rawSource = $this->getOneRawSource($asyncLog);
+        
+        if ($rawSource) {
+            $rawSource = $this->reformatRawData($rawSource);
+            $this->tDownload($rawSource);
+            $rawSource = $this->thumbReset($rawSource);
         }
         
-        return false;
+        return $rawSource;
+    }
+    
+    private function tDownload($rawSource)
+    {
+        $resourceHandler = fopen($rawSource['torrent_url'], 'rb');
+        
+        $targetHandler = fopen(env('TORRENT_WATCH_DIRECTORY').DIRECTORY_SEPARATOR.pathinfo($rawSource['torrent_url'])['filename'].'.torrent', 'wb');
+        
+        if ($resourceHandler === false || $targetHandler === false) {
+            
+            throw new \Exception('Cant open file');
+        }
+        
+        while (!feof($resourceHandler)) {
+            if (fwrite($targetHandler, fread($resourceHandler, 1024)) === false) {
+                
+                throw new \Exception('Cant write file');
+            }
+        }
+        
+        fclose($resourceHandler);
+        
+        fclose($targetHandler);
+        
+        return true;
+    }
+    
+    private function reformatRawData(array $data)
+    {
+        // all type of source should be reformated, but for asia type, images can be used directly.and for euro type, images should be reformated cause of hotlink forbidden
+        switch ($data['type']) {
+            case Common::IS_AISA:
+                $data['torrent_url'] = env('P_SCRAWLER_URL').'/images/'.$data['torrent_url'];
+                break;
+            case Common::IS_EURO:
+                $data['thumb_url'] = env('P_SCRAWLER_URL').'/images/'.$data['thumb_url'];
+                $data['torrent_url'] = env('P_SCRAWLER_URL').'/torrent/'.$data['torrent_url'];
+                break;
+        }
+        
+        return $data;
     }
     
     private function thumbReset(array $data)
@@ -125,13 +137,10 @@ class ServiceCommand extends Command
         // Euro`s image can not be hotlink.so upload to free hosting.
         if (isset($data['type']) && $data['type'] == Common::IS_EURO) {
             if (isset($data['thumb_url']) && $data['thumb_url']) {
-                if (file_exists(env('STATISTICS_SCRAWLER_DIRECTORY').DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.$data['thumb_url'])) {
-                    $ibbRes = $this->imagesUploader->Ibb(env('STATISTICS_SCRAWLER_DIRECTORY').DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.$data['thumb_url']);
-                }
+                $ibbRes = $this->imagesUploader->Ibb($data['thumb_url']);
                 
                 if (isset($ibbRes['thumb_url']) && $ibbRes['thumb_url']) {
                     $data['thumb_url'] = $ibbRes['thumb_url'];
-                    @unlink(env('STATISTICS_SCRAWLER_DIRECTORY').DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.$data['thumb_url']);
                 }
             }
         }

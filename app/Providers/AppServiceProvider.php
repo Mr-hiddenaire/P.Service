@@ -26,7 +26,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        /*
         if (env('APP_DEBUG')) {
             DB::listen(function($query){
                 $dbLogger = new Logger('log');
@@ -43,6 +42,5 @@ class AppServiceProvider extends ServiceProvider
                 $dbLogger->info($sql);
             });
         }
-        */
     }
 }

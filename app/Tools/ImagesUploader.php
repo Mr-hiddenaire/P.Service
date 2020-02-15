@@ -25,12 +25,14 @@ class ImagesUploader
             $image = $imageUrl;
         }
         
+        $postData = [
+            'key' => $configuration['key'],
+            'image' => $image,
+            'name' => time(),
+        ];
+        
         $response = $this->_client->post($configuration['endpoint'], [
-            'form_params' => [
-                'key' => $configuration['key'],
-                'image' => $image,
-                'name' => time(),
-            ],
+            'form_params' => $postData,
         ]);
         
         $res = json_decode($response->getBody(), true);

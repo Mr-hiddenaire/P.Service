@@ -49,4 +49,25 @@ class ContentsController extends Controller
             'data' => $res
         ]);
     }
+    
+    public function setSyncStatus(Request $request)
+    {
+        $id = intval($request->input('id')) ?? 0;
+        
+        if (!$id) {
+            return response()->json([
+                'retcode' => 200,
+                'retmsg' => 'id error',
+                'data' => []
+            ]);
+        }
+        
+        $res = $this->contentsService->modify([['id', '=', $id]], ['is_sync_status' => Common::IS_SYNC]);
+        
+        return response()->json([
+            'retcode' => 200,
+            'retmsg' => 'ok',
+            'data' => $res
+        ]);
+    }
 }

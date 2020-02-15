@@ -33,4 +33,9 @@ class ContentsService extends BaseService
     {
         return $this->contentsModel->getData($pageSize, $offset, $where, $fields);
     }
+    
+    public function modify($where, $data)
+    {
+        return $this->contentsModel->modify($where, $data);
+    }
 }

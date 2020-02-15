@@ -22,4 +22,6 @@ Route::post('/getRelatedVideos', 'ServiceController@getRelatedVideos');
 Route::post('/register', 'ServiceController@register');
 Route::post('/getUserInfoByEmail', 'ServiceController@getUserInfoByEmail');
 
+### Version 2 ###
 Route::post('/getShoudSyncData', 'ContentsController@getShoudSyncData');
+Route::post('/setSyncStatus', 'ContentsController@setSyncStatus');

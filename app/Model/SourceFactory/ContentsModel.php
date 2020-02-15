@@ -44,4 +44,9 @@ class ContentsModel extends BaseModel
             return [];
         }
     }
+    
+    public function modify($where, $data)
+    {
+        return self::where($where)->update($data);
+    }
 }

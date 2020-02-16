@@ -21,7 +21,7 @@ class ContentsService extends BaseService
     
     public function deleteInfo($where)
     {
-        return $this->deleteInfo($where);
+        return $this->contentsModel->deleteInfo($where);
     }
     
     public function addContents(array $data)

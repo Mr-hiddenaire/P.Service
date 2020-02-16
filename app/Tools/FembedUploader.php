@@ -237,6 +237,7 @@ class FembedUploader
             
             $this->retry = 0;
             $code = $res->getStatusCode();
+            dd($code);
             $fingerprintUrl = current($res->getHeader('Location'));
             
         } catch (\Exception $e) {

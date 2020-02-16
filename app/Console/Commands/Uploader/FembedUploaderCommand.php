@@ -135,18 +135,20 @@ class FembedUploaderCommand extends Command
     
     private function clearFiles($filepath)
     {
+        $this->doDirDel($filepath);
+        
+        // delete directory under download directory
         if (is_dir($filepath)) {
-            $this->doDirDel($filepath, true);
-        } else {
-            $this->doDirDel(env('TORRENT_DOWNLOAD_DIRECTORY'), false);
+            rmdir($filepath);
         }
         
-        $this->doDirDel(env('TORRENT_WATCH_DIRECTORY'), false);
-        $this->doDirDel(env('TORRENT_RESUME_DIRECTORY'), false);
-        $this->doDirDel(env('TORRENT_TORRENT_DIRECTORY'), false);
+        $this->doDirDel(env('TORRENT_DOWNLOAD_DIRECTORY'));
+        $this->doDirDel(env('TORRENT_WATCH_DIRECTORY'));
+        $this->doDirDel(env('TORRENT_RESUME_DIRECTORY'));
+        $this->doDirDel(env('TORRENT_TORRENT_DIRECTORY'));
     }
     
-    private function doDirDel($path, $selfDeletion = false)
+    private function doDirDel($path)
     {
         $path = $path.DIRECTORY_SEPARATOR;
         
@@ -173,18 +175,6 @@ class FembedUploaderCommand extends Command
                 } else {
                     Log::info($file.' deletion fail');
                 }
-            }
-        }
-        
-        if ($selfDeletion) {
-            Log::info('Deleting the directory '.$path);
-            
-            $res = rmdir($path);
-            
-            if ($res) {
-                Log::info($path.' deletion success');
-            } else {
-                Log::info($path.' deletion fail');
             }
         }
     }

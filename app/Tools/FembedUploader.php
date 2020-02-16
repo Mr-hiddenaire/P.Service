@@ -140,6 +140,9 @@ class FembedUploader
 
     private function getCache($key)
     {
+        // disable cache.
+        return false;
+        
         $key = $this->cache_dir.'/'.$key;
         
         if (!is_file($key)) {

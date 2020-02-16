@@ -86,49 +86,6 @@ function numberShowFriendly($number)
     return $result;
 }
 
-function detectMIME($filename)
-{
-    $file = fopen($filename, 'rb');
-    $finfo = finfo_open(FILEINFO_MIME);
-
-    // 直接读取文件的前4个字节，根据硬编码判断
-    $file = fopen($filename, 'rb');
-
-    //只读文件头4字节
-    $bin = fread($file, 4);
-
-    fclose($file);
-
-    $strInfo = @unpack('C4chars', $bin);
-
-    //dechex() 函数把十进制转换为十六进制。
-    $typeCode = dechex($strInfo['chars1']).dechex($strInfo['chars2']).dechex($strInfo['chars3']).dechex($strInfo['chars4']);
-
-    //硬编码值查表
-    switch ($typeCode)
-    {
-        case '25504446':
-            $type = 'pdf';
-            break;
-        case 'd0cf11e0':
-        case '504b34':
-            $type = 'office';
-            break;
-        default:
-            $type = 'error';
-            break;
-    }
-
-    return $type;
-}
-
-function stylefiltration($str)
-{
-    $str=preg_replace("/style=('|\")[^\"]*?('|\")/","",$str);
-    
-    return $str;
-}
-
 function contentHtmlEntityDecode($content)
 {
     return strip_tags(html_entity_decode($content));

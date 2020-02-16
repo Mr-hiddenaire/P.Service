@@ -140,6 +140,7 @@ class FembedUploaderCommand extends Command
         // directory deletion recursively
         if (is_dir($filepath)) {
             $this->doDirDel($filepath);
+            rmdir($filepath);
         } else {
             // file deletion directly
             rmdir($filepath);

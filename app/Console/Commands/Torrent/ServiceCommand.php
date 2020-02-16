@@ -118,7 +118,7 @@ class ServiceCommand extends Command
     
     private function reformatRawData(array $data)
     {
-        // all type of source should be reformated, but for asia type, images can be used directly.and for euro type, images should be reformated cause of hotlink forbidden
+        // all type torrent of source should be reformated, but for asia type, images can be used directly.and for euro type, images should be reformated cause of hotlink forbidden
         switch ($data['type']) {
             case Common::IS_AISA:
                 $data['torrent_url'] = env('P_SCRAWLER_URL').'/torrent/'.$data['torrent_url'];

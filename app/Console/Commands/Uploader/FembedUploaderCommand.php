@@ -137,8 +137,11 @@ class FembedUploaderCommand extends Command
     {
         $this->doDirDel($filepath);
         
-        // delete directory under download directory
+        // directory deletion recursively
         if (is_dir($filepath)) {
+            $this->doDirDel($filepath);
+        } else {
+            // file deletion directly
             rmdir($filepath);
         }
         

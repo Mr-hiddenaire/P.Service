@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
         if (env('APP_DEBUG')) {
             DB::listen(function($query){
                 $dbLogger = new Logger('log');
-                $dbLogger->pushHandler(new StreamHandler(storage_path('logs/sql-'.date('Y-m-d').'.log')), Logger::INFO);
+                $dbLogger->pushHandler(new StreamHandler(storage_path('logs/sql.log')), Logger::INFO);
                 
                 $sql = str_replace('?', '%s', $query->sql);
                 

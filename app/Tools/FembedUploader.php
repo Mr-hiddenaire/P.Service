@@ -63,7 +63,7 @@ class FembedUploader
         }
 
         // Make sure chunk will not pass PHP Memory Limit
-        $chunkSizeBytes = 60 * 1024;
+        $chunkSizeBytes = 3;
         $total = $this->byteConvert(ini_get('memory_limit'));
         $used_now = memory_get_usage(true);
         // Keep 2GB for overhead

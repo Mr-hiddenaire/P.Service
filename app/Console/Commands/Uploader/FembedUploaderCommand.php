@@ -135,17 +135,6 @@ class FembedUploaderCommand extends Command
     
     private function clearFiles($filepath)
     {
-        $this->doDirDel($filepath);
-        
-        // directory deletion recursively
-        if (is_dir($filepath)) {
-            $this->doDirDel($filepath);
-            rmdir($filepath);
-        } else {
-            // file deletion directly
-            rmdir($filepath);
-        }
-        
         $this->doDirDel(env('TORRENT_DOWNLOAD_DIRECTORY'));
         $this->doDirDel(env('TORRENT_WATCH_DIRECTORY'));
         $this->doDirDel(env('TORRENT_RESUME_DIRECTORY'));

@@ -15,8 +15,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         \App\Console\Commands\Uploader\FembedUploaderCommand::class,
         \App\Console\Commands\Torrent\ServiceCommand::class,
-        \App\Console\Commands\TestCommand::class,
         \App\Console\Commands\Uploader\VUploaderCommand::class,
+        \App\Console\Commands\ToolsCommand::class,
     ];
 
     /**

@@ -87,13 +87,17 @@ class VUploaderCommand extends Command
                     $this->fembed->doSingleFileUpload($filepath, $originalSource);
                 }
                 
-                unlink($filepath);
-                
                 $this->transmission->doRemove();
                 
                 $this->downloadFilesService->deleteInfo([
                     ['id', '=', $downloadedFileInfo['id']]
                 ]);
+                
+                if (file_exists($filepath)) {
+                    if (is_dir($filepath)) {
+                        rmdir($filepath);
+                    }
+                }
             } else {
                 Log::info('Downloaded file not found');
             }

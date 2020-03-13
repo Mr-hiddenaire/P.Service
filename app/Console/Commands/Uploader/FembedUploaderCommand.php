@@ -27,7 +27,7 @@ class FembedUploaderCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Upload files to [FEMBED]';
+    protected $description = 'Download information writting locally';
 
     /**
      * Create a new command instance.

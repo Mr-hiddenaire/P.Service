@@ -3,11 +3,12 @@
 namespace App\Console\Commands\Uploader;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
-use App\Common\Fembed;
-use App\Constants\Common;
 
-use App\Services\SourceFactory\ContentsService;
+use Illuminate\Support\Facades\Log;
+use App\Constants\Common;
+use App\Common\Fembed;
+
+use App\Services\OriginalSource\ContentsService as OriginalContentsService;
 use App\Services\SourceFactory\DownloadFilesService;
 
 use App\Common\Transmission;
@@ -16,27 +17,25 @@ class VUploaderCommand extends Command
 {
     protected $fembed;
     
-    protected $asyncLogService;
-    
-    protected $contentsService;
-    
-    protected $transmission;
+    protected $originalContentsService;
     
     protected $downloadFilesService;
+    
+    protected $transmission;
     
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'fembed:upload {info}';
+    protected $signature = 'do:video:upload';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Upload files to [FEMBED]';
+    protected $description = 'Start upload the video to [FEMBED]';
 
     /**
      * Create a new command instance.
@@ -45,20 +44,20 @@ class VUploaderCommand extends Command
      */
     public function __construct(
         Fembed $fembed,
-        ContentsService $contentsService,
         Transmission $transmission,
-        DownloadFilesService $downloadFilesService
+        DownloadFilesService $downloadFilesService,
+        OriginalContentsService $originalContentsService
         )
     {
         $this->fembed = $fembed;
         
         $this->fembed->doAccountSetting();
         
-        $this->contentsService = $contentsService;
-        
         $this->transmission = $transmission;
         
         $this->downloadFilesService = $downloadFilesService;
+        
+        $this->originalContentsService = $originalContentsService;
         
         parent::__construct();
     }
@@ -70,6 +69,32 @@ class VUploaderCommand extends Command
      */
     public function handle()
     {
+        $downloadedFileInfo = $this->downloadFilesService->getInfo([
+            ['download_finish', '=', Common::IS_DOWNLOAD_FINISHED]
+        ], ['*'], ['id', 'DESC']);
         
+        if ($downloadedFileInfo) {
+            $originalSource = $this->originalContentsService->getInfo([
+                ['id', '=', $downloadedFileInfo['original_source_id']]
+            ], ['*'], ['id', 'DESC']);
+            
+            $filepath = env('TORRENT_DOWNLOAD_DIRECTORY').DIRECTORY_SEPARATOR.$downloadedFileInfo['filename'];
+            
+            if (file_exists($filepath)) {
+                if (is_dir($filepath)) {
+                    $this->fembed->doMultiFilesUpload($filepath, $originalSource);
+                } else if (is_file($filepath)) {
+                    $this->fembed->doSingleFileUpload($filepath, $originalSource);
+                }
+                
+                unlink($filepath);
+                
+                $this->transmission->doRemove();
+            } else {
+                Log::info('Downloaded file not found');
+            }
+        } else {
+            Log::info('File not downloaded finished yet');
+        }
     }
 }

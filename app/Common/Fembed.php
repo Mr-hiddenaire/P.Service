@@ -5,14 +5,21 @@ namespace App\Common;
 use App\Tools\FembedUploader;
 use Illuminate\Support\Facades\Log;
 
+use App\Services\SourceFactory\ContentsService;
+use App\Constants\Common;
+
 class Fembed extends FembedUploader
 {
+    protected $contentsService;
+    
     const VIDEO_FORMAT = [
         'mkv', 'wmv', 'avi', 'mp4', 'mpeg4', 'mpegps', 'flv', '3gp', 'webm', 'mov', 'mpg', 'm4v',
     ];
     
-   public function __construct()
+   public function __construct(ContentsService $contentsService)
    {
+       $this->contentsService = $contentsService;
+       
        parent::__construct();
    }
    
@@ -21,13 +28,32 @@ class Fembed extends FembedUploader
     * @param string $filepath
     * @return \stdClass
     */
-   public function doSingleFileUpload($filepath)
+   public function doSingleFileUpload($filepath, ...$parameters)
    {
+       $originalSource = $parameters[0];
+       
        $this->doFileSetting($filepath);
        
        $res = $this->Run();
        
        Log::info('Single: uploaded result to fembed', ['result' => $res]);
+       
+       if ($res->result == 'success') {
+           $data = [
+               'name' => $originalSource['name'],
+               'unique_id' => $originalSource['unique_id'],
+               'tags' => $originalSource['tags'],
+               'type' => $originalSource['type'],
+               'thumb_url' => $originalSource['thumb_url'],
+               'video_url' => $res->data,
+               'origin_source_id' => $originalSource['id'],
+               'is_sync_status' => Common::IS_NOT_SYNC,
+           ];
+           
+           $this->contentsService->addContents($data);
+           
+           unlink($filepath);
+       }
    }
    
    /**
@@ -35,9 +61,11 @@ class Fembed extends FembedUploader
     * @param string $filepath
     * @return \stdClass
     */
-   public function doMultiFilesUpload($filepath)
+   public function doMultiFilesUpload($filepath, ...$parameters)
    {
        $counter = 1;
+       
+       $originalSource = $parameters[0];
        
        $directory = new \RecursiveDirectoryIterator($filepath);
        
@@ -53,6 +81,23 @@ class Fembed extends FembedUploader
                Log::info('Multi: uploaded result to fembed('.$counter.')', ['result' => $res]);
                
                $counter = $counter + 1;
+               
+               if ($res->result == 'success') {
+                   $data = [
+                       'name' => $originalSource['name'],
+                       'unique_id' => $originalSource['unique_id'],
+                       'tags' => $originalSource['tags'],
+                       'type' => $originalSource['type'],
+                       'thumb_url' => $originalSource['thumb_url'],
+                       'video_url' => $res->data,
+                       'origin_source_id' => $originalSource['id'],
+                       'is_sync_status' => Common::IS_NOT_SYNC,
+                   ];
+                   
+                   $this->contentsService->addContents($data);
+                   
+                   unlink($filename);
+               }
            }
        }
    }

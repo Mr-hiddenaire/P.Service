@@ -66,7 +66,10 @@ class ServiceCommand extends Command
         if (!$downloadInfo) {
             $originalSource = $this->pickUpOneItem();
             
-            $this->setDownloadFileRecord($originalSource);
+            // random type maybe empty data
+            if ($originalSource) {
+                $this->setDownloadFileRecord($originalSource);
+            }
         }
     }
     

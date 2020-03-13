@@ -30,7 +30,8 @@ class Fembed extends FembedUploader
     */
    public function doSingleFileUpload($filepath, ...$parameters)
    {
-       $originalSource = $parameters[0];
+       $downloadedFileInfo = $parameters[0];
+       $originalSource = json_decode($downloadedFileInfo['original_source_info'], true);
        
        $this->doFileSetting($filepath);
        

@@ -25,7 +25,7 @@ class FembedUploader
     public function __construct()
     {
         $this->http = new \GuzzleHttp\Client([
-            'base_uri' => 'https://www.fembed.com/api/',
+            'base_uri' => env('UPLOAD_BASE_URL'),
             'timeout' => 10,
         ]);
         if (!is_dir($this->cache_dir)) {

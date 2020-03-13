@@ -21,7 +21,7 @@ class Fembed extends FembedUploader
     * @param string $filepath
     * @return \stdClass
     */
-   public function dealWithFile($filepath)
+   public function doSingleFileUpload($filepath)
    {
        $this->doFileSetting($filepath);
        
@@ -35,7 +35,7 @@ class Fembed extends FembedUploader
     * @param string $filepath
     * @return \stdClass
     */
-   public function dealWithDirectory($filepath)
+   public function doMultiFilesUpload($filepath)
    {
        $counter = 1;
        

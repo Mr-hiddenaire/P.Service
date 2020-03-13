@@ -77,6 +77,7 @@ class ServiceCommand extends Command
             'filename' => '',
             'original_source_id' => $originalSource['id'],
             'download_finish' => Common::IS_DOWNLOAD_NOT_FINISHED_YET,
+            'original_source_info' => json_encode($originalSource),
         ];
         
         return $this->downloadFilesService->addInfo($data);

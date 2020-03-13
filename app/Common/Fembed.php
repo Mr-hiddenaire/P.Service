@@ -65,7 +65,8 @@ class Fembed extends FembedUploader
    {
        $counter = 1;
        
-       $originalSource = $parameters[0];
+       $downloadedFileInfo = $parameters[0];
+       $originalSource = json_decode($downloadedFileInfo['original_source_info'], true);
        
        $directory = new \RecursiveDirectoryIterator($filepath);
        

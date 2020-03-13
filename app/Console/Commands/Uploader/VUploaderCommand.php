@@ -74,17 +74,13 @@ class VUploaderCommand extends Command
         ], ['*'], ['id', 'DESC']);
         
         if ($downloadedFileInfo) {
-            $originalSource = $this->originalContentsService->getInfo([
-                ['id', '=', $downloadedFileInfo['original_source_id']]
-            ], ['*'], ['id', 'DESC']);
-            
             $filepath = env('TORRENT_DOWNLOAD_DIRECTORY').DIRECTORY_SEPARATOR.$downloadedFileInfo['filename'];
             
             if (file_exists($filepath)) {
                 if (is_dir($filepath)) {
-                    $this->fembed->doMultiFilesUpload($filepath, $originalSource);
+                    $this->fembed->doMultiFilesUpload($filepath, $downloadedFileInfo);
                 } else if (is_file($filepath)) {
-                    $this->fembed->doSingleFileUpload($filepath, $originalSource);
+                    $this->fembed->doSingleFileUpload($filepath, $downloadedFileInfo);
                 }
                 
                 $this->transmission->doRemove();

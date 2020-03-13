@@ -10,7 +10,7 @@ use App\Services\SourceFactory\DownloadFilesService;
 use App\Constants\Common;
 use App\Tools\ImagesUploader;
 
-#use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Log;
 
 class ServiceCommand extends Command
 {
@@ -72,6 +72,8 @@ class ServiceCommand extends Command
     
     private function setDownloadFileRecord(array $originalSource)
     {
+        Log::info('Original source info before set', ['parameters' => $originalSource]);
+        
         $data = [
             // Filename of file downloaded by transmission that will be set later. so predefine a empty value here.
             'filename' => '',

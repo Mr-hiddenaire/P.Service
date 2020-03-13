@@ -63,7 +63,7 @@ class FembedUploaderCommand extends Command
         
         Log::info('Download_finish_callback_parameter', ['parameters' => $parsedParameters]);
         
-        $filepath = $parsedParameters['torrent_downloaded_file_name'];
+        $filepath = env('TORRENT_DOWNLOAD_DIRECTORY').DIRECTORY_SEPARATOR.$parsedParameters['torrent_downloaded_file_name'];
         
         if (file_exists($filepath)) {
             $downloadFileRecord = $this->downloadFilesService->getInfo([], ['id'], ['id', 'DESC']);

@@ -4,13 +4,13 @@ namespace App\Model\SourceFactory;
 
 use App\Model\SourceFactory\BaseModel;
 
-class AsyncLogModel extends BaseModel
+class DownloadFilesModel extends BaseModel
 {
     public function __construct($attributes = [])
     {
         parent::__construct($attributes);
         
-        $this->table = 'async_log';
+        $this->table = 'downloaded_files';
     }
     
     public function getInfo($where, $fields, array $orderBy)
@@ -24,12 +24,12 @@ class AsyncLogModel extends BaseModel
         }
     }
     
-    public function addAsyncLog(array $data)
+    public function addInfo(array $data)
     {
         return self::insert($data);
     }
     
-    public function updateAsyncLog($where, array $data)
+    public function updateInfo($where, array $data)
     {
         return self::where($where)->update($data);
     }

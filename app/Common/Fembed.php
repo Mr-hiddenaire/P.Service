@@ -16,19 +16,29 @@ class Fembed extends FembedUploader
        parent::__construct();
    }
    
+   /**
+    * Upload single file
+    * @param string $filepath
+    * @return \stdClass
+    */
    public function dealWithFile($filepath)
    {
        $this->doFileSetting($filepath);
        
        $res = $this->Run();
        
-       Log::info('Uploaded result to fembed: '.json_encode($res));
-       
-       return $res;
+       Log::info('Single: uploaded result to fembed', ['result' => $res]);
    }
    
+   /**
+    * Upload multi files under the directory
+    * @param string $filepath
+    * @return \stdClass
+    */
    public function dealWithDirectory($filepath)
    {
+       $counter = 1;
+       
        $directory = new \RecursiveDirectoryIterator($filepath);
        
        foreach (new \RecursiveIteratorIterator($directory) as $filename => $file) {
@@ -36,19 +46,22 @@ class Fembed extends FembedUploader
            
            if (in_array($extension, self::VIDEO_FORMAT)) {
                
-               Log::info('filename is (with directory):'.$filename.PHP_EOL);
-               
                $this->doFileSetting($filename);
                
                $res = $this->Run();
                
-               Log::info('Uploaded result to fembed: '.json_encode($res));
+               Log::info('Multi: uploaded result to fembed('.$counter.')', ['result' => $res]);
                
-               return $res;
+               $counter = $counter + 1;
            }
        }
    }
    
+   /**
+    * Parameters parser
+    * @param string $parameters
+    * @return array
+    */
    public function parseParameters(string $parameters)
    {
        $result = [];
@@ -66,10 +79,13 @@ class Fembed extends FembedUploader
        $torrentDownloadedFileId = $parameterArr[4];
        $torrentDownloadedFileName = $parameterArr[5];
        
-       if (!$torrentAppVersion || !$torrentDownloadedFileLocaltime || !$torrentDownloadDir || !$torrentDownloadedFileHash || !$torrentDownloadedFileId || !$torrentDownloadedFileName) {
-           
-           Log::warning('Parameter error from shell script');
-           
+       if (!$torrentAppVersion
+           || !$torrentDownloadedFileLocaltime
+           || !$torrentDownloadDir
+           || !$torrentDownloadedFileHash
+           || !$torrentDownloadedFileId
+           || !$torrentDownloadedFileName
+           ) {
            return false;
        }
        
@@ -85,11 +101,19 @@ class Fembed extends FembedUploader
        return $result;
    }
    
+   /**
+    * Set file
+    * @param string $file
+    */
    public function doFileSetting($file)
    {
        $this->SetInput($file);
    }
    
+   /**
+    * Set fembed account
+    * @param array $account
+    */
    public function doAccountSetting($account = [])
    {
        if (!$account) {
@@ -99,6 +123,11 @@ class Fembed extends FembedUploader
        $this->SetAccount($account);
    }
    
+   /**
+    * Get fembed account information
+    * @throws \Exception
+    * @return StdClass
+    */
    private function _getFembedAccount()
    {
        $account = config('fembed.account');

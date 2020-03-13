@@ -7,11 +7,20 @@ use Illuminate\Support\Facades\Log;
 use App\Common\Fembed;
 use App\Constants\Common;
 
+use App\Services\SourceFactory\ContentsService;
 use App\Services\SourceFactory\DownloadFilesService;
 
-class FembedUploaderCommand extends Command
+use App\Common\Transmission;
+
+class VUploaderCommand extends Command
 {
     protected $fembed;
+    
+    protected $asyncLogService;
+    
+    protected $contentsService;
+    
+    protected $transmission;
     
     protected $downloadFilesService;
     
@@ -36,10 +45,18 @@ class FembedUploaderCommand extends Command
      */
     public function __construct(
         Fembed $fembed,
+        ContentsService $contentsService,
+        Transmission $transmission,
         DownloadFilesService $downloadFilesService
         )
     {
         $this->fembed = $fembed;
+        
+        $this->fembed->doAccountSetting();
+        
+        $this->contentsService = $contentsService;
+        
+        $this->transmission = $transmission;
         
         $this->downloadFilesService = $downloadFilesService;
         
@@ -53,27 +70,6 @@ class FembedUploaderCommand extends Command
      */
     public function handle()
     {
-        $parameter = $this->argument('info');
         
-        $parsedParameters = $this->fembed->parseParameters($parameter);
-        
-        if ($parsedParameters === false) {
-            return false;
-        }
-        
-        Log::info('Download_finish_callback_parameter', ['parameters' => $parsedParameters]);
-        
-        $filepath = $parsedParameters['torrent_downloaded_file_name'];
-        
-        if (file_exists($filepath)) {
-            $downloadFileRecord = $this->downloadFilesService->getInfo([], ['id'], ['id', 'DESC']);
-            
-            $this->downloadFilesService->updateInfo([
-                ['id', '=', $downloadFileRecord['id']]
-            ], [
-                'download_finish' => Common::IS_DOWNLOAD_FINISHED,
-                'filename' => $filepath,
-            ]);
-        }
     }
 }

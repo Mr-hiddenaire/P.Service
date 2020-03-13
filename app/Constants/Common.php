@@ -4,21 +4,30 @@ namespace App\Constants;
 
 class Common
 {
-    const ASYNC_LOG_HANDLE_FINISH = 1;
-    
-    const ASYNC_LOG_NOT_HANDLE = 0;
-    
+    // Asia type
     const IS_AISA = 1;
     
+    // Euro type
     const IS_EURO = 2;
     
-    const IS_SYNC = 2;
-    
-    const IS_NOT_SYNC = 1;
-    
-    const MAX_PAGE_SIZE = 100;
-    
+    // Picked up from original source
     const IS_PICKED_UP = 1;
     
+    // Not picked up from original source yet
     const IS_NOT_PICKED_UP = 0;
+    
+    // Downloaded by transmission finished
+    const IS_DOWNLOAD_FINISHED = 1;
+    
+    // Not downloaded by transmission yet
+    const IS_DOWNLOAD_NOT_FINISHED_YET = 0;
+    
+    // Is synced to website
+    const IS_SYNC = 2;
+    
+    // Is not synced to website
+    const IS_NOT_SYNC = 1;
+    
+    // The max page size
+    const MAX_PAGE_SIZE = 100;
 }

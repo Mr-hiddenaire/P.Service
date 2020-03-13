@@ -5,7 +5,7 @@ namespace App\Console\Commands\Torrent;
 use Illuminate\Console\Command;
 
 use App\Services\OriginalSource\ContentsService;
-use App\Services\SourceFactory\AsyncLogService;
+use App\Services\SourceFactory\DownloadFilesService;
 
 use App\Constants\Common;
 use App\Tools\ImagesUploader;
@@ -16,7 +16,7 @@ class ServiceCommand extends Command
 {
     protected $contentsService;
     
-    protected $asyncLogService;
+    protected $downloadFilesService;
     
     protected $imagesUploader;
     
@@ -39,13 +39,17 @@ class ServiceCommand extends Command
      *
      * @return void
      */
-    public function __construct(ContentsService $contentsService, AsyncLogService $asyncLogService, ImagesUploader $imagesUploader)
+    public function __construct(
+        ContentsService $contentsService,
+        DownloadFilesService $downloadFilesService,
+        ImagesUploader $imagesUploader
+        )
     {
         parent::__construct();
         
         $this->contentsService = $contentsService;
         
-        $this->asyncLogService = $asyncLogService;
+        $this->downloadFilesService = $downloadFilesService;
         
         $this->imagesUploader = $imagesUploader;
     }
@@ -57,30 +61,30 @@ class ServiceCommand extends Command
      */
     public function handle()
     {
-        $asyncLog = $this->getAsyncLog();
+        $originalSource = $this->pickUpOneItem();
         
-        if (!$asyncLog) {
-            $rawSource = $this->pickUpOneItem($asyncLog);
-            
-            if ($rawSource) {
-                $this->asyncLogService->addAsyncLog(['content' => json_encode($rawSource), 'status' => Common::ASYNC_LOG_NOT_HANDLE]);
-            }
-        } else {
-            if ($asyncLog['status'] == Common::ASYNC_LOG_HANDLE_FINISH) {
-                $rawSource = $this->pickUpOneItem($asyncLog);
-                
-                if ($rawSource) {
-                    $this->asyncLogService->updateAsyncLog([['id', '=', $asyncLog['id']]], ['content' => json_encode($rawSource), 'status' => Common::ASYNC_LOG_NOT_HANDLE]);
-                }
-            }
-        }
-        
-        return true;
+        $this->setDownloadFileRecord($originalSource);
     }
     
-    private function pickUpOneItem($asyncLog)
+    private function setDownloadFileRecord(array $originalSource)
     {
-        $rawSource = $this->getOneRawSource($asyncLog);
+        $data = [
+            // Filename of file downloaded by transmission that will be set later. so predefine a empty value here.
+            'filename' => '',
+            'original_source_id' => $originalSource['id'],
+            'download_finish' => Common::IS_DOWNLOAD_NOT_FINISHED_YET,
+        ];
+        
+        return $this->downloadFilesService->addInfo($data);
+    }
+    
+    /**
+     * Pick up one item from original source library
+     * @return array
+     */
+    private function pickUpOneItem()
+    {
+        $rawSource = $this->getOneRawSource();
         
         if ($rawSource) {
             $rawSource = $this->reformatRawData($rawSource);
@@ -91,6 +95,12 @@ class ServiceCommand extends Command
         return $rawSource;
     }
     
+    /**
+     * Download torrent from self server
+     * @param array $rawSource
+     * @throws \Exception
+     * @return boolean
+     */
     private function tDownload($rawSource)
     {
         $resourceHandler = fopen($rawSource['torrent_url'], 'rb');
@@ -116,6 +126,11 @@ class ServiceCommand extends Command
         return true;
     }
     
+    /**
+     * Torrent url and thumb url generation
+     * @param array $data
+     * @return array
+     */
     private function reformatRawData(array $data)
     {
         // all type torrent of source should be reformated, but for asia type, images can be used directly.and for euro type, images should be reformated cause of hotlink forbidden
@@ -132,6 +147,11 @@ class ServiceCommand extends Command
         return $data;
     }
     
+    /**
+     * Upload images to ibb for euro`s type source
+     * @param array $data
+     * @return array
+     */
     private function thumbReset(array $data)
     {
         // Euro`s image can not be hotlink.so upload to free hosting.
@@ -148,7 +168,11 @@ class ServiceCommand extends Command
         return $data;
     }
     
-    private function getOneRawSource($asyncLog)
+    /**
+     * Get original source
+     * @return array
+     */
+    private function getOneRawSource()
     {
         $rdmn = $this->randType();
         
@@ -163,22 +187,10 @@ class ServiceCommand extends Command
         return $data;
     }
     
-    private function getAsyncLog()
-    {
-        $result = [];
-        
-        $asyncLog = $this->asyncLogService->getInfo([], ['*'], ['id', 'ASC']);
-        
-        if ($asyncLog) {
-            $result['id'] = $asyncLog['id'];
-            $result['content'] = json_decode($asyncLog['content'], true);
-            $result['status'] = $asyncLog['status'];
-            return $result;
-        }
-        
-        return $result;
-    }
-    
+    /**
+     * Type generation random
+     * @return number
+     */
     private function randType()
     {
         $rdmn = rand(Common::IS_AISA, Common::IS_EURO);

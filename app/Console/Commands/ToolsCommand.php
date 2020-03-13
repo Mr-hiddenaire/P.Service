@@ -15,7 +15,7 @@ class ToolsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'json:get.conent {--method=%s} {--original-id=%d}';
+    protected $signature = 'tool:cmd {--method=%s} {--original-id=%d}';
 
     /**
      * The console command description.

@@ -109,6 +109,8 @@ class Fembed extends FembedUploader
     */
    public function parseParameters(string $parameters)
    {
+       Log::info('done shell parameters', ['parameters' => $parameters]);
+       
        $result = [];
        
        if (!$parameters) {

@@ -78,10 +78,6 @@ class Fembed extends FembedUploader
                
                $res = $this->Run();
                
-               Log::info('Multi: uploaded result to fembed('.$counter.')', ['result' => $res]);
-               
-               $counter = $counter + 1;
-               
                if ($res->result == 'success') {
                    $data = [
                        'name' => $originalSource['name'].' part('.$counter.')',
@@ -97,6 +93,10 @@ class Fembed extends FembedUploader
                    $this->contentsService->addContents($data);
                    
                    unlink($filename);
+                   
+                   Log::info('Multi: uploaded result to fembed('.$counter.')', ['result' => $res]);
+                   
+                   $counter = $counter + 1;
                }
            }
        }

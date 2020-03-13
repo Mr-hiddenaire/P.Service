@@ -33,4 +33,9 @@ class DownloadFilesModel extends BaseModel
     {
         return self::where($where)->update($data);
     }
+    
+    public function deleteInfo($where)
+    {
+        return self::where($where)->delete();
+    }
 }

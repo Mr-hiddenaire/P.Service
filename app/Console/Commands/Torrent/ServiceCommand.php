@@ -61,9 +61,13 @@ class ServiceCommand extends Command
      */
     public function handle()
     {
-        $originalSource = $this->pickUpOneItem();
+        $downloadInfo = $this->downloadFilesService->getInfo([], ['*'], ['id', 'DESC']);
         
-        $this->setDownloadFileRecord($originalSource);
+        if (!$downloadInfo) {
+            $originalSource = $this->pickUpOneItem();
+            
+            $this->setDownloadFileRecord($originalSource);
+        }
     }
     
     private function setDownloadFileRecord(array $originalSource)

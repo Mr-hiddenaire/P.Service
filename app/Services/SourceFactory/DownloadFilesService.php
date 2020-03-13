@@ -28,4 +28,9 @@ class DownloadFilesService extends BaseService
     {
         return $this->downloadFilesModel->updateInfo($where, $data);
     }
+    
+    public function deleteInfo($where)
+    {
+        return $this->downloadFilesModel->deleteInfo($where);
+    }
 }

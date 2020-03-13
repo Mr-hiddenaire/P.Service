@@ -90,6 +90,10 @@ class VUploaderCommand extends Command
                 unlink($filepath);
                 
                 $this->transmission->doRemove();
+                
+                $this->downloadFilesService->deleteInfo([
+                    ['id', '=', $downloadedFileInfo['id']]
+                ]);
             } else {
                 Log::info('Downloaded file not found');
             }

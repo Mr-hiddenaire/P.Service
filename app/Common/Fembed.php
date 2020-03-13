@@ -84,7 +84,7 @@ class Fembed extends FembedUploader
                
                if ($res->result == 'success') {
                    $data = [
-                       'name' => $originalSource['name'],
+                       'name' => $originalSource['name'].' part('.$counter.')',
                        'unique_id' => $originalSource['unique_id'],
                        'tags' => $originalSource['tags'],
                        'type' => $originalSource['type'],

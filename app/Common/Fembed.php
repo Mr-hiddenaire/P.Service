@@ -6,19 +6,35 @@ use App\Tools\FembedUploader;
 use Illuminate\Support\Facades\Log;
 
 use App\Services\SourceFactory\ContentsService;
+use App\Services\SourceFactory\DownloadFilesService;
+
+use App\Common\Transmission;
+
 use App\Constants\Common;
 
 class Fembed extends FembedUploader
 {
     protected $contentsService;
     
+    protected $downloadFilesService;
+    
+    protected $transmission;
+    
     const VIDEO_FORMAT = [
         'mkv', 'wmv', 'avi', 'mp4', 'mpeg4', 'mpegps', 'flv', '3gp', 'webm', 'mov', 'mpg', 'm4v',
     ];
     
-   public function __construct(ContentsService $contentsService)
+   public function __construct(
+       ContentsService $contentsService,
+       DownloadFilesService $downloadFilesService,
+       Transmission $transmission
+       )
    {
        $this->contentsService = $contentsService;
+       
+       $this->transmission = $transmission;
+       
+       $this->downloadFilesService = $downloadFilesService;
        
        parent::__construct();
    }
@@ -51,9 +67,19 @@ class Fembed extends FembedUploader
                'is_sync_status' => Common::IS_NOT_SYNC,
            ];
            
+           // Step first: add contents
            $this->contentsService->addContents($data);
            
+           // Step second: local file deletion
            unlink($filepath);
+           
+           // Step third: download info deletion
+           $this->downloadFilesService->deleteInfo([
+               ['id', '=', $downloadedFileInfo['id']]
+           ]);
+           
+           // Step forth: transmission reload
+           $this->transmission->doRemove();
        }
    }
    
@@ -92,14 +118,31 @@ class Fembed extends FembedUploader
                        'is_sync_status' => Common::IS_NOT_SYNC,
                    ];
                    
+                   // Step first: add contents
                    $this->contentsService->addContents($data);
                    
+                   // Step second: local file deletion
                    unlink($filename);
                    
                    Log::info('Multi: uploaded result to fembed('.$counter.')', ['result' => $res]);
                    
                    $counter = $counter + 1;
                }
+           }
+       }
+       
+       // Step third: download info deletion
+       $this->downloadFilesService->deleteInfo([
+           ['id', '=', $downloadedFileInfo['id']]
+       ]);
+       
+       // Step forth: transmission reload
+       $this->transmission->doRemove();
+       
+       // Stemp fivth: delete the directory come up with downloaded file
+       if (file_exists($filepath)) {
+           if (is_dir($filepath)) {
+               rmdir($filepath);
            }
        }
    }

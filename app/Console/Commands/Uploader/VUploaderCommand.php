@@ -8,16 +8,11 @@ use Illuminate\Support\Facades\Log;
 use App\Constants\Common;
 use App\Common\Fembed;
 
-use App\Services\OriginalSource\ContentsService as OriginalContentsService;
 use App\Services\SourceFactory\DownloadFilesService;
-
-use App\Common\Transmission;
 
 class VUploaderCommand extends Command
 {
     protected $fembed;
-    
-    protected $originalContentsService;
     
     protected $downloadFilesService;
     
@@ -44,20 +39,14 @@ class VUploaderCommand extends Command
      */
     public function __construct(
         Fembed $fembed,
-        Transmission $transmission,
-        DownloadFilesService $downloadFilesService,
-        OriginalContentsService $originalContentsService
+        DownloadFilesService $downloadFilesService
         )
     {
         $this->fembed = $fembed;
         
         $this->fembed->doAccountSetting();
         
-        $this->transmission = $transmission;
-        
         $this->downloadFilesService = $downloadFilesService;
-        
-        $this->originalContentsService = $originalContentsService;
         
         parent::__construct();
     }
@@ -82,23 +71,11 @@ class VUploaderCommand extends Command
                 } else if (is_file($filepath)) {
                     $this->fembed->doSingleFileUpload($filepath, $downloadedFileInfo);
                 }
-                
-                $this->transmission->doRemove();
-                
-                $this->downloadFilesService->deleteInfo([
-                    ['id', '=', $downloadedFileInfo['id']]
-                ]);
-                
-                if (file_exists($filepath)) {
-                    if (is_dir($filepath)) {
-                        rmdir($filepath);
-                    }
-                }
             } else {
                 Log::info('Downloaded file not found');
             }
         } else {
-            Log::info('File not downloaded finished yet');
+            Log::info('File not finished download yet');
         }
     }
 }

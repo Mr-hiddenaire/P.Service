@@ -80,6 +80,9 @@ class Fembed extends FembedUploader
            
            // Step forth: transmission reload
            $this->transmission->doRemove();
+           
+           // Step fivth: clear transmission cache files
+           $this->clearFiles();
        }
    }
    
@@ -139,12 +142,23 @@ class Fembed extends FembedUploader
        // Step forth: transmission reload
        $this->transmission->doRemove();
        
-       // Stemp fivth: delete the directory come up with downloaded file
+       // Step fivth: delete the directory come up with downloaded file
        if (file_exists($filepath)) {
            if (is_dir($filepath)) {
                rmdir($filepath);
            }
        }
+       
+       // Step sixth: clear transmission cache files
+       $this->clearFiles();
+   }
+   
+   private function clearFiles()
+   {
+       rrmdir(env('TORRENT_DOWNLOAD_DIRECTORY'));
+       rrmdir(env('TORRENT_WATCH_DIRECTORY'));
+       rrmdir(env('TORRENT_RESUME_DIRECTORY'));
+       rrmdir(env('TORRENT_TORRENT_DIRECTORY'));
    }
    
    /**

@@ -62,7 +62,7 @@ class VUploaderCommand extends Command
             ['download_finish', '=', Common::IS_DOWNLOAD_FINISHED]
         ], ['*'], ['id', 'DESC']);
         
-        if ($downloadedFileInfo && $downloadedFileInfo['status'] != Common::IS_UPOADING) {
+        if ($downloadedFileInfo && $downloadedFileInfo['status'] != Common::IS_UPOADING && $downloadedFileInfo['filename']) {
             // Set uploading
             $this->downloadFilesService->updateInfo([
                 ['id', '=', $downloadedFileInfo['id']]
@@ -72,17 +72,13 @@ class VUploaderCommand extends Command
             
             $filepath = env('TORRENT_DOWNLOAD_DIRECTORY').DIRECTORY_SEPARATOR.$downloadedFileInfo['filename'];
             
-            if (file_exists($filepath)) {
-                if (is_dir($filepath)) {
-                    $this->fembed->doMultiFilesUpload($filepath, $downloadedFileInfo);
-                } else if (is_file($filepath)) {
-                    $this->fembed->doSingleFileUpload($filepath, $downloadedFileInfo);
-                }
-            } else {
-                Log::info('Downloaded file not found');
+            if (is_dir($filepath)) {
+                $this->fembed->doMultiFilesUpload($filepath, $downloadedFileInfo);
+            } else if (is_file($filepath)) {
+                $this->fembed->doSingleFileUpload($filepath, $downloadedFileInfo);
             }
         } else {
-            Log::info('File not finished download yet');
+            Log::info('File not finished download yet or uploading now');
         }
     }
 }

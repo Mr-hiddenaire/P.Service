@@ -62,7 +62,14 @@ class VUploaderCommand extends Command
             ['download_finish', '=', Common::IS_DOWNLOAD_FINISHED]
         ], ['*'], ['id', 'DESC']);
         
-        if ($downloadedFileInfo) {
+        if ($downloadedFileInfo && $downloadedFileInfo['status'] != Common::IS_UPOADING) {
+            // Set uploading
+            $this->downloadFilesService->updateInfo([
+                ['id', '=', $downloadedFileInfo['id']]
+            ], [
+                'status' => Common::IS_UPOADING,
+            ]);
+            
             $filepath = env('TORRENT_DOWNLOAD_DIRECTORY').DIRECTORY_SEPARATOR.$downloadedFileInfo['filename'];
             
             if (file_exists($filepath)) {

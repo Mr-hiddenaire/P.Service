@@ -30,4 +30,6 @@ class Common
     
     // The max page size
     const MAX_PAGE_SIZE = 100;
+    
+    const IS_UPOADING = 1;
 }

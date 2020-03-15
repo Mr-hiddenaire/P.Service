@@ -76,7 +76,7 @@ class FembedUploader
         $filesize = filesize($this->file);
         $cache_key = md5($this->file.$filesize);
         $fingerprintUrl = $this->getCache($cache_key);
-        
+        dd($fingerprintUrl);
         if (!$fingerprintUrl) {
             $res = $this->getEndpointToken();
             if (!$res->success) {

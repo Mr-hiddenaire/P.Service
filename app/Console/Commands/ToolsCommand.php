@@ -119,6 +119,6 @@ class ToolsCommand extends Command
             echo 'Delete download file fail !'.PHP_EOL;
         }
         
-        @$this->transmission->doRemove();
+        @$this->transmission->doRemoveForce();
     }
 }

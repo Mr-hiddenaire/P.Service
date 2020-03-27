@@ -125,4 +125,38 @@ class Transmission
             }
         }
     }
+    
+    public function doRemoveForce()
+    {
+        $request = [];
+        
+        $request['method'] = 'torrent-get';
+        $request['arguments'] = [];
+        $request['arguments']['fields'] = ['id', 'name', 'doneDate', 'haveValid', 'totalSize'];
+        
+        try {
+            $reply = json_decode($this->doPostRequest($this->_transmissionRPC, json_encode($request)));
+        } catch (\Exception $e) {
+            Log::info("*** Exception: %s\n", $e->getMessage());
+        }
+        
+        $arr = $reply->arguments->torrents;
+        
+        foreach ($arr as $tor)
+        {
+            Log::info(sprintf("Torrent '%s' finished on %s\n", $tor->name, strftime("%Y-%b-%d %H:%M:%S", $tor->doneDate)));
+            
+            $request = array('method' => 'torrent-remove', 'arguments' => ['ids' => [$tor->id]]);
+            
+            try {
+                $reply = json_decode($this->doPostRequest($this->_transmissionRPC, json_encode($request)));
+            } catch (\Exception $e) {
+                Log::info("*** Exception: %s\n", $e->getMessage());
+            }
+            
+            if ($reply->result != 'success') {
+                Log::info("*** Failed to remove torrent ***\n");
+            }
+        }
+    }
 }

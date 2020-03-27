@@ -5,17 +5,20 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 
 use App\Services\OriginalSource\ContentsService;
+use App\Services\SourceFactory\DownloadFilesService;
 
 class ToolsCommand extends Command
 {
     protected $contentsService;
+    
+    protected $downloadFilesService;
     
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'tool:cmd {--method=%s} {--original-id=%d}';
+    protected $signature = 'tool:cmd {--method=} {--original-id=} {--archive-priority=}';
 
     /**
      * The console command description.
@@ -30,10 +33,13 @@ class ToolsCommand extends Command
      * @return void
      */
     public function __construct(
-        ContentsService $contentsService
+        ContentsService $contentsService,
+        DownloadFilesService $downloadFilesService
         )
     {
         $this->contentsService = $contentsService;
+        
+        $this->downloadFilesService = $downloadFilesService;
         
         parent::__construct();
     }
@@ -45,17 +51,66 @@ class ToolsCommand extends Command
      */
     public function handle()
     {
-        $this->{$this->option('method')}();
+        $method = $this->option('method');
+        
+        if (!$method) {
+            dd('No method supplied');
+        }
+        
+        $this->{$method}();
     }
     
     private function getJsonContent()
     {
         $originalId = intval($this->option('original-id'));
         
+        if (!$originalId) {
+            dd('Original id required');
+        }
+        
         $res = $this->contentsService->getInfo([
             ['id', '=', $originalId]
         ], ['*'], ['id', 'DESC']);
         
-        echo json_encode($res);
+        echo json_encode($res).PHP_EOL;
+    }
+    
+    private function doArchive()
+    {
+        $originalId = intval($this->option('original-id'));
+        $archivePriority = intval($this->option('archive-priority'));
+        
+        if (!$originalId) {
+            dd('Original id required');
+        }
+        
+        if (!$archivePriority) {
+            dd('Archive priority value required');
+        }
+        
+        echo 'Archiving ...'.PHP_EOL;
+        
+        $uResult = $this->contentsService->modify([
+            ['id', '=', $originalId]
+        ], [
+            'is_archive' => 1,
+            'archive_priority' => $archivePriority,
+        ]);
+        
+        if ($uResult) {
+            echo 'Archive successfully !'.PHP_EOL;
+        } else {
+            echo 'Archive fail !'.PHP_EOL;
+        }
+        
+        echo 'Deleting downloaded file ...'.PHP_EOL;
+        
+        $dResult = $this->downloadFilesService->deleteInfo(['original_source_id' => $originalId]);
+        
+        if ($dResult) {
+            echo 'Delete download file successfully !'.PHP_EOL;
+        } else {
+            echo 'Delete download file fail !'.PHP_EOL;
+        }
     }
 }

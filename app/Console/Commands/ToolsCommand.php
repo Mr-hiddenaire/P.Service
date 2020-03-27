@@ -6,12 +6,15 @@ use Illuminate\Console\Command;
 
 use App\Services\OriginalSource\ContentsService;
 use App\Services\SourceFactory\DownloadFilesService;
+use App\Common\Transmission;
 
 class ToolsCommand extends Command
 {
     protected $contentsService;
     
     protected $downloadFilesService;
+    
+    protected $transmission;
     
     /**
      * The name and signature of the console command.
@@ -34,12 +37,15 @@ class ToolsCommand extends Command
      */
     public function __construct(
         ContentsService $contentsService,
-        DownloadFilesService $downloadFilesService
+        DownloadFilesService $downloadFilesService,
+        Transmission $transmission
         )
     {
         $this->contentsService = $contentsService;
         
         $this->downloadFilesService = $downloadFilesService;
+        
+        $this->transmission = $transmission;
         
         parent::__construct();
     }
@@ -112,5 +118,7 @@ class ToolsCommand extends Command
         } else {
             echo 'Delete download file fail !'.PHP_EOL;
         }
+        
+        @$this->transmission->doRemove();
     }
 }

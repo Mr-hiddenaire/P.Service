@@ -68,6 +68,8 @@ class ServiceCommand extends Command
             
             // random type maybe empty data
             if ($originalSource) {
+                // thumb image upload first and then download torrent.sometimes, its fail during thumb uploading.
+                $this->tDownload($originalSource);
                 $this->setDownloadFileRecord($originalSource);
             }
         }
@@ -98,7 +100,6 @@ class ServiceCommand extends Command
         
         if ($rawSource) {
             $rawSource = $this->reformatRawData($rawSource);
-            $this->tDownload($rawSource);
             $rawSource = $this->thumbReset($rawSource);
         }
         

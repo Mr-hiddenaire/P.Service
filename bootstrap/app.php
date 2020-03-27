@@ -1,5 +1,24 @@
 <?php
 
+if (!defined('APP_ROOT')) {
+    define('APP_ROOT', realpath(__DIR__ .'/../../') .DIRECTORY_SEPARATOR );
+}
+
+if (!defined('APP_PROJECT_ROOT')) {
+    define('APP_PROJECT_ROOT', APP_ROOT . 'P.Services' .DIRECTORY_SEPARATOR );
+}
+
+if (!defined('APP_NAME')) {
+    define('APP_NAME', 'P.Services');
+}
+
+if (!function_exists('with')) {
+    function with($value, callable $callback = null)
+    {
+        return is_null($callback) ? $value : $callback($value);
+    }
+}
+
 /*
 |--------------------------------------------------------------------------
 | Create The Application

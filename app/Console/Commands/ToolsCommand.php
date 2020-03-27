@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use App\Services\OriginalSource\ContentsService;
 use App\Services\SourceFactory\DownloadFilesService;
 use App\Common\Transmission;
+use Illuminate\Support\Facades\Log;
 
 class ToolsCommand extends Command
 {
@@ -83,6 +84,9 @@ class ToolsCommand extends Command
     
     private function doArchive()
     {
+        Log::info('[test.test]', ['name' => 'Jim']);
+        exit;
+        
         $originalId = intval($this->option('original-id'));
         $archivePriority = intval($this->option('archive-priority'));
         

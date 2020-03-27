@@ -16,16 +16,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
-    }
-
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
         if (env('APP_DEBUG')) {
             DB::listen(function($query){
                 $dbLogger = new Logger('log');
@@ -42,5 +32,20 @@ class AppServiceProvider extends ServiceProvider
                 $dbLogger->info($sql);
             });
         }
+    }
+
+    protected function doRequestIdGeneration()
+    {
+        define( 'REQUEST_ID' , time());
+    }
+    
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->doRequestIdGeneration();
     }
 }

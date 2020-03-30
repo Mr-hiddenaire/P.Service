@@ -135,7 +135,7 @@ class Fembed extends FembedUploader
                $realFilename = basename($filename);
                if ($realFilename != '.' && $realFilename != '..') {
                    // other file deletion directly
-                   rmdir($filename);
+                   unlink($filename);
                }
            }
        }

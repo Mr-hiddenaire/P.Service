@@ -7,6 +7,9 @@ use Illuminate\Console\Command;
 use App\Services\OriginalSource\ContentsService;
 use App\Services\SourceFactory\DownloadFilesService;
 use App\Common\Transmission;
+use App\Common\Fembed;
+
+use App\Constants\Common;
 
 class ToolsCommand extends Command
 {
@@ -15,6 +18,8 @@ class ToolsCommand extends Command
     protected $downloadFilesService;
     
     protected $transmission;
+    
+    protected $fembed;
     
     /**
      * The name and signature of the console command.
@@ -38,7 +43,8 @@ class ToolsCommand extends Command
     public function __construct(
         ContentsService $contentsService,
         DownloadFilesService $downloadFilesService,
-        Transmission $transmission
+        Transmission $transmission,
+        Fembed $fembed
         )
     {
         $this->contentsService = $contentsService;
@@ -46,6 +52,8 @@ class ToolsCommand extends Command
         $this->downloadFilesService = $downloadFilesService;
         
         $this->transmission = $transmission;
+        
+        $this->fembed = $fembed;
         
         parent::__construct();
     }
@@ -120,5 +128,20 @@ class ToolsCommand extends Command
         }
         
         @$this->transmission->doRemoveForce();
+    }
+    
+    private function reupload()
+    {
+        $downloadedFileInfo = $this->downloadFilesService->getInfo([
+            ['download_finish', '=', Common::IS_DOWNLOAD_FINISHED]
+        ], ['*'], ['id', 'DESC']);
+        
+        $filepath = env('TORRENT_DOWNLOAD_DIRECTORY').DIRECTORY_SEPARATOR.$downloadedFileInfo['filename'];
+        
+        if (is_dir($filepath)) {
+            $this->fembed->doMultiFilesUpload($filepath, $downloadedFileInfo);
+        } else if (is_file($filepath)) {
+            $this->fembed->doSingleFileUpload($filepath, $downloadedFileInfo);
+        }
     }
 }

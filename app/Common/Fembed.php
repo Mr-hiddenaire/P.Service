@@ -131,6 +131,9 @@ class Fembed extends FembedUploader
                    
                    $counter = $counter + 1;
                }
+           } else {
+               // other file deletion directly
+               rmdir($filename);
            }
        }
        

@@ -132,12 +132,11 @@ class Fembed extends FembedUploader
                    $counter = $counter + 1;
                }
            } else {
-               // other file deletion directly
-               if (is_dir($filename)) {
-                   $filename = trim($filename, '/');
+               $realFilename = basename($filename);
+               if ($realFilename != '.' && $realFilename != '..') {
+                   // other file deletion directly
+                   rmdir($filename);
                }
-               
-               rmdir($filename);
            }
        }
        

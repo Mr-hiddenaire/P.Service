@@ -55,6 +55,8 @@ class ToolsCommand extends Command
         
         $this->fembed = $fembed;
         
+        $this->fembed->doAccountSetting();
+        
         parent::__construct();
     }
 

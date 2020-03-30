@@ -145,8 +145,10 @@ class Fembed extends FembedUploader
            if (is_dir($filepath)) {
                rmdir($filepath);
            }
-       } else {
-           // Make sure upload successfully.[here implies all files uploaded successfully.]
+       }
+       
+       // Make sure upload successfully.[here implies all files uploaded successfully.]
+       if (!file_exists($filepath)) {
            // Step third: download info deletion
            $this->downloadFilesService->deleteInfo([
                ['id', '=', $downloadedFileInfo['id']]

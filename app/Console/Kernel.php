@@ -27,8 +27,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        ### Download resources ###
+        $schedule->command('command:torrent:download')->everyMinute();
+        
+        ### Upload videos ###
+        $schedule->command('do:video:upload')->everyMinute();
     }
 
     /**

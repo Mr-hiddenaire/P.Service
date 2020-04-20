@@ -11,6 +11,8 @@ use App\Common\Fembed;
 
 use App\Constants\Common;
 
+use App\Jobs\VideoCut;
+
 class ToolsCommand extends Command
 {
     protected $contentsService;
@@ -145,5 +147,10 @@ class ToolsCommand extends Command
         } else if (is_file($filepath)) {
             $this->fembed->doSingleFileUpload($filepath, $downloadedFileInfo);
         }
+    }
+    
+    private function testMail()
+    {
+        VideoCut::dispatch($this->downloadFilesService)->onConnection('redis')->onQueue('seo.cv.queue');
     }
 }

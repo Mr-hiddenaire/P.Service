@@ -4,8 +4,6 @@ namespace App\Tools;
 
 use GuzzleHttp\Client;
 
-use Illuminate\Support\Facades\Log;
-
 class ImagesUploader
 {
     private $_client;
@@ -21,11 +19,8 @@ class ImagesUploader
         
         $configuration = config('images.ibb');
         
-        Log::info('imgbb.thumb.url', ['url' => $imageUrl]);
-        
         if (file_exists($imageUrl)) {
             $image = base64_encode(file_get_contents($imageUrl));
-            Log::info('imgbb.request.base64.image', ['image' => $image]);
         } else {
             $image = $imageUrl;
         }

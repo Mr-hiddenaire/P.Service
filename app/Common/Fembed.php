@@ -12,6 +12,8 @@ use App\Common\Transmission;
 
 use App\Constants\Common;
 
+use App\Jobs\VideoCut;
+
 class Fembed extends FembedUploader
 {
     protected $contentsService;

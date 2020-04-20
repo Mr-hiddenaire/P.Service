@@ -151,6 +151,9 @@ class ToolsCommand extends Command
     
     private function testMail()
     {
-        VideoCut::dispatch($this->downloadFilesService)->onConnection('redis')->onQueue('seo.cv.queue');
+        $data = [];
+        $filepath = '';
+        
+        VideoCut::dispatch(['name' => 'fky', 'unique_id' => 'sinn-700', 'tags' => 'wwm'], '/Users/Jim/Downloads/v/v.mp4')->onConnection('redis')->onQueue('seo.cv.queue');
     }
 }

@@ -28,7 +28,7 @@ class ToolsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'tool:cmd {--method=} {--original-id=} {--archive-priority=}';
+    protected $signature = 'tool:cmd {--method=} {--original-id=} {--archive-priority=} {--data=} {--filepath=}';
 
     /**
      * The console command description.
@@ -153,6 +153,14 @@ class ToolsCommand extends Command
     {
         $data = json_decode($this->option('data'), true);
         $filepath = $this->option('filepath');
+        
+        if (!$data) {
+            dd('Data required');
+        }
+        
+        if (!$filepath) {
+            dd('Filepath required');
+        }
         
         VideoCut::dispatch($data, $filepath)->onConnection('redis')->onQueue('seo.cv.queue');
     }

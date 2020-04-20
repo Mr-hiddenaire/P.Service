@@ -79,8 +79,8 @@ class VideoCut implements ShouldQueue
     
     private function sendMail($cvfilename)
     {
-        $sendToAddress = env('SEND_TO_ADDRESS');
-        $sendToName = env('SEND_TO_NAME');
+        $sendToAddress = config('mail.to.address');
+        $sendToName = config('mail.to.name');
         $sendTitle = 'SEO SUPPLIES';
         $sendBody = 'FILES NEEDED BY SEO';
         $attachmentPath = $cvfilename;

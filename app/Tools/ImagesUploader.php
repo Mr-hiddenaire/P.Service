@@ -19,11 +19,15 @@ class ImagesUploader
         
         $configuration = config('images.ibb');
         
+        /*
         if (file_exists($imageUrl)) {
             $image = base64_encode(file_get_contents($imageUrl));
         } else {
             $image = $imageUrl;
         }
+        */
+        
+        $image = $imageUrl;
         
         $postData = [
             'key' => $configuration['key'],

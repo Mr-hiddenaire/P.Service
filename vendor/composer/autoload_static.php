@@ -10,16 +10,18 @@ class ComposerStaticInit1db2f0fc8ca4e48a6a7f767ed175a0ba
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         'f598d06aa772fa33d905e87be6398fb1' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/bootstrap.php',
-        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
+        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '1d1b89d124cc9cb8219922c9d5569199' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
-        'def43f6c87e4f8dfd0c9e1b1bab14fe8' => __DIR__ . '/..' . '/symfony/polyfill-iconv/bootstrap.php',
-        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
-        '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
+        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        'def43f6c87e4f8dfd0c9e1b1bab14fe8' => __DIR__ . '/..' . '/symfony/polyfill-iconv/bootstrap.php',
+        '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
+        'fe62ba7e10580d903cc46d808b5961a4' => __DIR__ . '/..' . '/tightenco/collect/src/Collect/Support/helpers.php',
+        'caf31cc6ec7cf2241cb6f12c226c3846' => __DIR__ . '/..' . '/tightenco/collect/src/Collect/Support/alias.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         '538ca81a9a966a6716601ecf48f4eaef' => __DIR__ . '/..' . '/opis/closure/functions.php',
         '801c31d8ed748cfa537fa45402288c95' => __DIR__ . '/..' . '/psy/psysh/src/functions.php',
@@ -44,7 +46,9 @@ class ComposerStaticInit1db2f0fc8ca4e48a6a7f767ed175a0ba
         ),
         'T' => 
         array (
+            'Tree\\' => 5,
             'TijsVerkoyen\\CssToInlineStyles\\' => 31,
+            'Tightenco\\Collect\\' => 18,
             'Tests\\' => 6,
         ),
         'S' => 
@@ -75,6 +79,13 @@ class ComposerStaticInit1db2f0fc8ca4e48a6a7f767ed175a0ba
             'Symfony\\Component\\CssSelector\\' => 30,
             'Symfony\\Component\\Console\\' => 26,
             'Symfony\\Component\\BrowserKit\\' => 29,
+            'Spatie\\TemporaryDirectory\\' => 26,
+            'Spatie\\Sitemap\\' => 15,
+            'Spatie\\Robots\\' => 14,
+            'Spatie\\Image\\' => 13,
+            'Spatie\\ImageOptimizer\\' => 22,
+            'Spatie\\Crawler\\' => 15,
+            'Spatie\\Browsershot\\' => 19,
             'Seld\\PharUtils\\' => 15,
             'Seld\\JsonLint\\' => 14,
         ),
@@ -105,6 +116,7 @@ class ComposerStaticInit1db2f0fc8ca4e48a6a7f767ed175a0ba
         ),
         'L' => 
         array (
+            'League\\Glide\\' => 13,
             'League\\Flysystem\\' => 17,
             'Laravel\\Tinker\\' => 15,
         ),
@@ -116,6 +128,7 @@ class ComposerStaticInit1db2f0fc8ca4e48a6a7f767ed175a0ba
         ),
         'I' => 
         array (
+            'Intervention\\Image\\' => 19,
             'Illuminate\\' => 11,
         ),
         'G' => 
@@ -173,9 +186,17 @@ class ComposerStaticInit1db2f0fc8ca4e48a6a7f767ed175a0ba
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
         ),
+        'Tree\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/nicmart/tree/src',
+        ),
         'TijsVerkoyen\\CssToInlineStyles\\' => 
         array (
             0 => __DIR__ . '/..' . '/tijsverkoyen/css-to-inline-styles/src',
+        ),
+        'Tightenco\\Collect\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/tightenco/collect/src/Collect',
         ),
         'Tests\\' => 
         array (
@@ -285,6 +306,34 @@ class ComposerStaticInit1db2f0fc8ca4e48a6a7f767ed175a0ba
         array (
             0 => __DIR__ . '/..' . '/symfony/browser-kit',
         ),
+        'Spatie\\TemporaryDirectory\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/spatie/temporary-directory/src',
+        ),
+        'Spatie\\Sitemap\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/spatie/laravel-sitemap/src',
+        ),
+        'Spatie\\Robots\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/spatie/robots-txt/src',
+        ),
+        'Spatie\\Image\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/spatie/image/src',
+        ),
+        'Spatie\\ImageOptimizer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/spatie/image-optimizer/src',
+        ),
+        'Spatie\\Crawler\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/spatie/crawler/src',
+        ),
+        'Spatie\\Browsershot\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/spatie/browsershot/src',
+        ),
         'Seld\\PharUtils\\' => 
         array (
             0 => __DIR__ . '/..' . '/seld/phar-utils/src',
@@ -345,6 +394,10 @@ class ComposerStaticInit1db2f0fc8ca4e48a6a7f767ed175a0ba
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
+        'League\\Glide\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/glide/src',
+        ),
         'League\\Flysystem\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/flysystem/src',
@@ -364,6 +417,10 @@ class ComposerStaticInit1db2f0fc8ca4e48a6a7f767ed175a0ba
         'JakubOnderka\\PhpConsoleColor\\' => 
         array (
             0 => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src',
+        ),
+        'Intervention\\Image\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/intervention/image/src/Intervention/Image',
         ),
         'Illuminate\\' => 
         array (

@@ -13,6 +13,8 @@ use App\Constants\Common;
 
 use App\Jobs\VideoCut;
 
+use Spatie\Sitemap\SitemapGenerator;
+
 class ToolsCommand extends Command
 {
     protected $contentsService;
@@ -163,5 +165,10 @@ class ToolsCommand extends Command
         }
         
         VideoCut::dispatch($data, $filepath)->onConnection('redis')->onQueue('seo.cv.queue');
+    }
+    
+    private function testSitemap()
+    {
+        SitemapGenerator::create(config('app.url'))->writeToFile(public_path('sitemap.xml'));
     }
 }

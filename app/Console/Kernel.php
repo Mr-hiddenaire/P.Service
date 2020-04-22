@@ -35,7 +35,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('do:video:upload')->everyMinute();
         
         #### Sitemap generation ##
-        $schedule->command('sitemap:generate')->daily();
+        #$schedule->command('sitemap:generate')->daily();
     }
 
     /**

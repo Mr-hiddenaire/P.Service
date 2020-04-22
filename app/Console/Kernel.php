@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\Torrent\ServiceCommand::class,
         \App\Console\Commands\Uploader\VUploaderCommand::class,
         \App\Console\Commands\ToolsCommand::class,
+        \App\Console\Commands\SitemapCommand::class,
     ];
 
     /**

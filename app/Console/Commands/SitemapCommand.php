@@ -7,14 +7,11 @@ use Illuminate\Console\Command;
 use Spatie\Sitemap\SitemapGenerator;
 use Psr\Http\Message\UriInterface;
 
+use App\Services\Sitemap\SitemapService;
+
 class SitemapCommand extends Command
 {
-    const SHOULD_CRAWL_LIST = [
-        '/viewforum.php',
-        '/viewtopic.php',
-        '/search.php.php',
-        '/',
-    ];
+    const CHUNK_SIZE = 100;
     
     /**
      * The name and signature of the console command.
@@ -29,15 +26,19 @@ class SitemapCommand extends Command
      * @var string
      */
     protected $description = 'Generate the sitemap';
+    
+    protected $sitemapService;
 
     /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(SitemapService $sitemapService)
     {
         parent::__construct();
+        
+        $this->sitemapService = $sitemapService;
     }
 
     /**
@@ -48,12 +49,17 @@ class SitemapCommand extends Command
     public function handle()
     {
         SitemapGenerator::create(config('app.url'))->shouldCrawl(function (UriInterface $url) {
-            if (in_array($url->getPath(), self::SHOULD_CRAWL_LIST)) {
-                return true;
-            }
+            return true;
             
-            return false;
-            
-        })->setMaximumCrawlCount(1000)->writeToFile(config('sitemap.P_SITE_ROOT_PATH'));
+        })->setMaximumCrawlCount(self::CHUNK_SIZE)->writeToFile(config('sitemap.P_SITE_ROOT_PATH'));
+        
+        $sitemapXMLStr = file_get_contents(config('sitemap.P_SITE_ROOT_PATH'));
+        
+        $sitemapXML = simplexml_load_string($sitemapXMLStr, 'SimpleXMLElement', LIBXML_NOCDATA);
+        
+        $sitemapJson = json_encode($sitemapXML);
+        $sitemapArr = json_decode($sitemapJson, true);
+        
+        dd($sitemapArr);
     }
 }

@@ -32,7 +32,7 @@ class SitemapCommand extends Command
     /**
      * Create a new command instance.
      *
-     * @return void
+     * @param SitemapService $sitemapService
      */
     public function __construct(SitemapService $sitemapService)
     {
@@ -48,7 +48,7 @@ class SitemapCommand extends Command
      */
     public function handle()
     {
-        SitemapGenerator::create(config('app.url'))->shouldCrawl(function (UriInterface $url) {
+        SitemapGenerator::create(config('app.url'))->shouldCrawl(function () {
             return true;
             
         })->setMaximumCrawlCount(self::CHUNK_SIZE)->writeToFile(config('sitemap.P_SITE_ROOT_PATH'));

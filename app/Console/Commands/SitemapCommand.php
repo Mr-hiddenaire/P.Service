@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 
 use Spatie\Sitemap\SitemapGenerator;
-use Psr\Http\Message\UriInterface;
 
 use App\Services\Sitemap\SitemapService;
 

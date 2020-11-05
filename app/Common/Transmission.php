@@ -23,6 +23,10 @@ class Transmission
     public function __construct()
     {
         if (env('APP_ENV') == 'production') {
+            $this->_username = env('TRANSMISSION_USERNAME');
+            
+            $this->_password = env('TRANSMISSION_PASSWORD');
+            
             $this->_transmissionHost = env('TRANSMISSION_HOST');
             
             $this->_transmissionPort = env('TRANSMISSION_PORT');
@@ -32,10 +36,6 @@ class Transmission
             $this->_transmissionRPC = 'http://'.$this->_transmissionHost.':'.$this->_transmissionPort.'/'.$this->_transmissionLocation;
             
             $this->_transmissionSessionId = $this->getTransmissionSessionId();
-            
-            $this->_username = env('TRANSMISSION_USERNAME');
-            
-            $this->_password = env('TRANSMISSION_PASSWORD');
         }
     }
     

@@ -16,6 +16,10 @@ class Transmission
     
     private $_transmissionSessionId;
     
+    private $_username;
+    
+    private $_password;
+    
     public function __construct()
     {
         if (env('APP_ENV') == 'production') {
@@ -28,6 +32,10 @@ class Transmission
             $this->_transmissionRPC = 'http://'.$this->_transmissionHost.':'.$this->_transmissionPort.'/'.$this->_transmissionLocation;
             
             $this->_transmissionSessionId = $this->getTransmissionSessionId();
+            
+            $this->_username = env('TRANSMISSION_USERNAME');
+            
+            $this->_password = env('TRANSMISSION_PASSWORD');
         }
     }
     
@@ -43,6 +51,7 @@ class Transmission
         
         $out = "GET /".$this->_transmissionLocation." HTTP/1.1\r\n";
         $out .= "Host: ".$this->_transmissionHost."\r\n";
+        $out .= "Authorization: Basic ".base64_encode($this->_username.':'.$this->_password)."\r\n";
         $out .= "Connection: Close\r\n\r\n";
         
         fwrite($fp, $out);

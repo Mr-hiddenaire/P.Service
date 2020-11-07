@@ -75,7 +75,8 @@ class Fembed extends FembedUploader
            $this->contentsService->addContents($data);
            
            // Step second: local file deletion
-           unlink($filepath);
+           // TODO
+           //unlink($filepath);
            
            // Step third: download info deletion
            $this->downloadFilesService->deleteInfo([
@@ -86,7 +87,8 @@ class Fembed extends FembedUploader
            $this->transmission->doRemove();
            
            // Step fivth: clear transmission cache files
-           $this->clearFiles();
+           // TODO
+           //$this->clearFiles();
        }
    }
    
@@ -131,7 +133,8 @@ class Fembed extends FembedUploader
                    $this->contentsService->addContents($data);
                    
                    // Step second: local file deletion
-                   unlink($filename);
+                   // TODO
+                   //unlink($filename);
                    
                    Log::info('Multi: uploaded result to fembed('.$counter.')', ['result' => $res]);
                    
@@ -141,7 +144,8 @@ class Fembed extends FembedUploader
                $realFilename = basename($filename);
                if ($realFilename != '.' && $realFilename != '..') {
                    // other file deletion directly
-                   unlink($filename);
+                   // TODO
+                   //unlink($filename);
                }
            }
        }
@@ -149,11 +153,14 @@ class Fembed extends FembedUploader
        // Step fivth: delete the directory come up with downloaded file
        if (file_exists($filepath)) {
            if (is_dir($filepath)) {
-               rmdir($filepath);
+               // TODO
+               //rmdir($filepath);
            }
        }
        
+       // TODO
        // Make sure upload successfully.[here implies all files uploaded successfully.]
+       /*
        if (!file_exists($filepath)) {
            // Step third: download info deletion
            $this->downloadFilesService->deleteInfo([
@@ -166,6 +173,15 @@ class Fembed extends FembedUploader
            // Step sixth: clear transmission cache files
            $this->clearFiles();
        }
+       */
+       
+       // Step third: download info deletion
+       $this->downloadFilesService->deleteInfo([
+           ['id', '=', $downloadedFileInfo['id']]
+       ]);
+       
+       // Step forth: transmission reload
+       $this->transmission->doRemove();
    }
    
    private function clearFiles()

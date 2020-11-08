@@ -19,7 +19,7 @@ class VideoCut implements ShouldQueue
     
     private $_duration_hour_end = '00';
     private $_duration_min_end = '00';
-    private $_duration_sec_end = '25';
+    private $_duration_sec_end = '10';
     
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 

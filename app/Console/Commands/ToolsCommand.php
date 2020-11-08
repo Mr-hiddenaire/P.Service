@@ -184,6 +184,6 @@ class ToolsCommand extends Command
             'name' => 'tool',
             'unique_id' => 'tool',
             'tags' => 'tool',
-        ], $filepath)->onConnection('redis')->onQueue('seo.cv.queue');
+        ], $filepath);
     }
 }

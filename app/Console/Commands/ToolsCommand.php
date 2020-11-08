@@ -187,6 +187,30 @@ class ToolsCommand extends Command
             dd('Filepath required');
         }
         
+        if (!$sh) {
+            dd('sh required');
+        }
+        
+        if (!$sm) {
+            dd('sm required');
+        }
+        
+        if (!$ss) {
+            dd('ss required');
+        }
+        
+        if (!$eh) {
+            dd('eh required');
+        }
+        
+        if (!$em) {
+            dd('em required');
+        }
+        
+        if (!$es) {
+            dd('es required');
+        }
+        
         VideoCut::dispatchNow([
             'name' => 'tool',
             'unique_id' => 'tool',

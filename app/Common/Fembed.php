@@ -51,7 +51,7 @@ class Fembed extends FembedUploader
        $downloadedFileInfo = $parameters[0];
        $originalSource = json_decode($downloadedFileInfo['original_source_info'], true);
        
-       VideoCut::dispatch($originalSource, $filepath)->onConnection('redis')->onQueue('seo.cv.queue');
+       VideoCut::dispatchNow($originalSource, $filepath)->onConnection('redis')->onQueue('seo.cv.queue');
        
        $this->doFileSetting($filepath);
        
@@ -111,7 +111,7 @@ class Fembed extends FembedUploader
            
            if (in_array($extension, self::VIDEO_FORMAT)) {
                
-               VideoCut::dispatch($originalSource, $filename)->onConnection('redis')->onQueue('seo.cv.queue');
+               VideoCut::dispatchNow($originalSource, $filename)->onConnection('redis')->onQueue('seo.cv.queue');
                
                $this->doFileSetting($filename);
                

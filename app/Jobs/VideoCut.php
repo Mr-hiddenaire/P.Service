@@ -13,13 +13,8 @@ use Illuminate\Support\Facades\Log;
 
 class VideoCut implements ShouldQueue
 {
-    private $_duration_hour_start = '00';
-    private $_duration_min_start = '10';
-    private $_duration_sec_start = '00';
-    
-    private $_duration_hour_end = '00';
-    private $_duration_min_end = '00';
-    private $_duration_sec_end = '03';
+    private $_startFrom = 15;
+    private $_duration = 5;
     
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -55,16 +50,12 @@ class VideoCut implements ShouldQueue
     {
         $cvfilename = env('TORRENT_DOWNLOAD_DIRECTORY').DIRECTORY_SEPARATOR.time().'_cv.mp4';
         
-        $cmd = 'ffmpeg -ss %s:%s:%s -i %s -t %s:%s:%s -c copy %s';
+        $cmd = 'ffmpeg -ss %s -i %s -to %s -c copy -copyts %s';
         $cmd = sprintf(
             $cmd,
-            $this->_duration_hour_start,
-            $this->_duration_min_start,
-            $this->_duration_sec_start,
+            $this->_startFrom,
             $this->filepath,
-            $this->_duration_hour_end,
-            $this->_duration_min_end,
-            $this->_duration_sec_end,
+            $this->_startFrom + $this->_duration,
             $cvfilename
             );
         

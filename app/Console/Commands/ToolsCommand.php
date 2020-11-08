@@ -171,4 +171,15 @@ class ToolsCommand extends Command
     {
         SitemapGenerator::create(config('app.url'))->writeToFile(public_path('sitemap.xml'));
     }
+    
+    private function vc()
+    {
+        $filepath = $this->option('filepath');
+        
+        if (!$filepath) {
+            dd('Filepath required');
+        }
+        
+        VideoCut::dispatch([], $filepath)->onConnection('redis')->onQueue('seo.cv.queue');
+    }
 }

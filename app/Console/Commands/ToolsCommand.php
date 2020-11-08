@@ -30,7 +30,7 @@ class ToolsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'tool:cmd {--method=} {--original-id=} {--archive-priority=} {--data=} {--filepath=}';
+    protected $signature = 'tool:cmd {--method=} {--original-id=} {--archive-priority=} {--data=} {--filepath=} {--sh=} {--sm=} {--ss=} {--eh=} {--em=} {--es=}';
 
     /**
      * The console command description.
@@ -175,6 +175,13 @@ class ToolsCommand extends Command
     private function vc()
     {
         $filepath = $this->option('filepath');
+        $sh = $this->option('sh');
+        $sm = $this->option('sm');
+        $ss = $this->option('ss');
+        
+        $eh = $this->option('eh');
+        $em = $this->option('em');
+        $es = $this->option('es');
         
         if (!$filepath) {
             dd('Filepath required');
@@ -184,6 +191,6 @@ class ToolsCommand extends Command
             'name' => 'tool',
             'unique_id' => 'tool',
             'tags' => 'tool',
-        ], $filepath);
+        ], $filepath, $sh, $sm, $ss, $eh, $em, $es);
     }
 }

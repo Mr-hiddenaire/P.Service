@@ -19,7 +19,7 @@ class VideoCut implements ShouldQueue
     
     private $_duration_hour_end = '00';
     private $_duration_min_end = '00';
-    private $_duration_sec_end = '03';
+    private $_duration_sec_end = '10';
     
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -34,11 +34,35 @@ class VideoCut implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($data, $filepath)
+    public function __construct($data, $filepath, $startH = '', $startM = '', $startS = '', $endH = '', $endM = '', $endS = '')
     {
         $this->data = $data;
         
         $this->filepath = $filepath;
+        
+        if ($startH) {
+            $this->_duration_hour_start = $startH;
+        }
+        
+        if ($startM) {
+            $this->_duration_min_start = $startM;
+        }
+        
+        if ($startS) {
+            $this->_duration_sec_start = $startS;
+        }
+        
+        if ($endH) {
+            $this->_duration_hour_end = $endH;
+        }
+        
+        if ($endM) {
+            $this->_duration_min_end = $endM;
+        }
+        
+        if ($endS) {
+            $this->_duration_sec_end = $endS;
+        }
     }
 
     /**

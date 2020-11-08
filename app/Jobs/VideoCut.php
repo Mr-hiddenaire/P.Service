@@ -79,7 +79,7 @@ class VideoCut implements ShouldQueue
     {
         $cvfilename = env('TORRENT_DOWNLOAD_DIRECTORY').DIRECTORY_SEPARATOR.time().'_cv.mp4';
         
-        $cmd = 'ffmpeg -ss %s:%s:%s %s -t %s:%s:%s %s -i %s -c:v libx264 -c:a aac -strict experimental -b:a 98k %s';
+        $cmd = 'ffmpeg -ss %s:%s:%s -t %s:%s:%s %s -i %s -c:v libx264 -c:a aac -strict experimental -b:a 98k %s';
         $cmd = sprintf(
             $cmd,
             $this->_duration_hour_start,

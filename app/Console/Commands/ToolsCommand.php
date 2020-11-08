@@ -180,6 +180,10 @@ class ToolsCommand extends Command
             dd('Filepath required');
         }
         
-        VideoCut::dispatchNow([], $filepath)->onConnection('redis')->onQueue('seo.cv.queue');
+        VideoCut::dispatchNow([
+            'name' => 'tool',
+            'unique_id' => 'tool',
+            'tags' => 'tool',
+        ], $filepath)->onConnection('redis')->onQueue('seo.cv.queue');
     }
 }

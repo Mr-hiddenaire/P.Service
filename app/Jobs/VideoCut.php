@@ -98,6 +98,7 @@ class VideoCut implements ShouldQueue
         
         if (file_exists($cvfilename)) {
             $this->sendMail($cvfilename);
+            unlink($cvfilename);
         }
     }
     

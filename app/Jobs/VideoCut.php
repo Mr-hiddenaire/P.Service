@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 class VideoCut implements ShouldQueue
 {
     private $_duration_hour_start = '00';
-    private $_duration_min_start = '20';
+    private $_duration_min_start = '15';
     private $_duration_sec_start = '00';
     
     private $_duration_hour_end = '00';

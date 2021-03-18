@@ -51,7 +51,7 @@ class Fembed extends FembedUploader
        $downloadedFileInfo = $parameters[0];
        $originalSource = json_decode($downloadedFileInfo['original_source_info'], true);
        
-       VideoCut::dispatchNow($originalSource, $filepath);
+       //VideoCut::dispatchNow($originalSource, $filepath);
        
        $this->doFileSetting($filepath);
        
@@ -111,7 +111,7 @@ class Fembed extends FembedUploader
            
            if (in_array($extension, self::VIDEO_FORMAT)) {
                
-               VideoCut::dispatchNow($originalSource, $filename);
+               //VideoCut::dispatchNow($originalSource, $filename);
                
                $this->doFileSetting($filename);
                

@@ -52,6 +52,11 @@ class FembedUploader
         $this->last_message = '';
     }
 
+    public function doThumbnailUpload()
+    {
+        
+    }
+    
     public function Run()
     {
         if (!is_file($this->file)) {

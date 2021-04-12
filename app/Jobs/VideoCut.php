@@ -2,12 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Tools\FembedUploader;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-
 use Illuminate\Support\Facades\Mail;
 #use Illuminate\Support\Facades\Log;
 
@@ -15,6 +16,8 @@ class VideoCut implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    protected $fembedUploader;
+    
     protected $data;
     
     protected $filepath;
@@ -31,6 +34,10 @@ class VideoCut implements ShouldQueue
         $this->data = $data;
         
         $this->filepath = $filepath;
+        
+        $this->fembedUploader = new FembedUploader();
+        
+        $this->fembedUploader->SetAccount(config('fembed.account'));
     }
 
     /**

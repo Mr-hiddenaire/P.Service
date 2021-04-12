@@ -98,10 +98,12 @@ class ServiceCommand extends Command
     {
         $rawSource = $this->getOneRawSource();
         
+        /*
         if ($rawSource) {
             $rawSource = $this->reformatRawData($rawSource);
             $rawSource = $this->thumbReset($rawSource);
         }
+        */
         
         return $rawSource;
     }

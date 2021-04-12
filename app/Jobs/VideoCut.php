@@ -9,18 +9,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Log;
+#use Illuminate\Support\Facades\Log;
 
 class VideoCut implements ShouldQueue
 {
-    private $_duration_hour_start = '00';
-    private $_duration_min_start = '20';
-    private $_duration_sec_start = '00';
-    
-    private $_duration_hour_end = '00';
-    private $_duration_min_end = '00';
-    private $_duration_sec_end = '10';
-    
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $data;
@@ -34,35 +26,11 @@ class VideoCut implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($data, $filepath, $startH = '', $startM = '', $startS = '', $endH = '', $endM = '', $endS = '')
+    public function __construct($data, $filepath)
     {
         $this->data = $data;
         
         $this->filepath = $filepath;
-        
-        if ($startH) {
-            $this->_duration_hour_start = $startH;
-        }
-        
-        if ($startM) {
-            $this->_duration_min_start = $startM;
-        }
-        
-        if ($startS) {
-            $this->_duration_sec_start = $startS;
-        }
-        
-        if ($endH) {
-            $this->_duration_hour_end = $endH;
-        }
-        
-        if ($endM) {
-            $this->_duration_min_end = $endM;
-        }
-        
-        if ($endS) {
-            $this->_duration_sec_end = $endS;
-        }
     }
 
     /**
@@ -72,57 +40,111 @@ class VideoCut implements ShouldQueue
      */
     public function handle()
     {
-        $this->doCV();
+        $this->doItemPickOutViaFFMPEG();
     }
     
-    private function doCV()
+    private function doItemsPickOutViaFFMPEG()
     {
-        $cvfilename = env('TORRENT_DOWNLOAD_DIRECTORY').DIRECTORY_SEPARATOR.time().'_cv.mp4';
+        $duration = $this->getDurationOfVideo($this->filepath);
+        $previewVideoFilename = $this->getVideoPreview($this->filepath, $duration);
+        $thumbnailFilename = $this->getThumbnail($this->filepath, $duration);
         
-        $cmd = 'ffmpeg -ss %s:%s:%s -t %s:%s:%s -i %s -c:v libx264 -c:a aac -strict experimental -b:a 98k %s';
-        $cmd = sprintf(
-            $cmd,
-            $this->_duration_hour_start,
-            $this->_duration_min_start,
-            $this->_duration_sec_start,
-            $this->_duration_hour_end,
-            $this->_duration_min_end,
-            $this->_duration_sec_end,
-            $this->filepath,
-            $cvfilename
-            );
+        $this->data['duration'] = $duration;
+        $this->data['previewVideoFilename'] = $previewVideoFilename;
+        $this->data['thumbnailFilename'] = $thumbnailFilename;
         
-        Log::info('cv', ['filename' => $cmd]);
+        $this->sendMail();
+    }
+    
+    private function getVideoPreview(string $filename, string $duration)
+    {
+        $durationSecondsInteger = $this->doDurationToSecondsInteger($duration);
+        $durationHalfSecondsInteger = $durationSecondsInteger / 2;
+        
+        $previewVideoFilename = env('TORRENT_DOWNLOAD_DIRECTORY').DIRECTORY_SEPARATOR.md5($filename).'_preview.mp4';
+        
+        $duration = date('H:i:s', $durationHalfSecondsInteger);
+        $durationArr = explode(':', $duration);
+        
+        $h = strval($durationArr[0]) ?? '00';
+        $m = strval($duration[1]) ?? '00';
+        $s = strval($duration[2]) ?? '00';
+        
+        $cmd = "ffmpeg -ss {$h}:{$m}:{$s} -t 00:00:05 -i {$filename} -c:v libx264 -c:a aac -strict experimental -b:a 98k {$previewVideoFilename}";
         
         exec($cmd);
         
-        if (file_exists($cvfilename)) {
-            $this->sendMail($cvfilename);
-            unlink($cvfilename);
-        }
+        return $previewVideoFilename;
     }
     
-    private function sendMail($cvfilename)
+    private function getThumbnail(string $filename, string $duration)
+    {
+        $durationSecondsInteger = $this->doDurationToSecondsInteger($duration);
+        $durationHalfSecondsInteger = $durationSecondsInteger / 2;
+        
+        $thumbnailFilename = env('TORRENT_DOWNLOAD_DIRECTORY').DIRECTORY_SEPARATOR.md5($filename).'_thumbnail.jpg';
+        
+        $duration = date('H:i:s', $durationHalfSecondsInteger);
+        $durationArr = explode(':', $duration);
+        
+        $h = strval($durationArr[0]) ?? '00';
+        $m = strval($duration[1]) ?? '00';
+        $s = strval($duration[2]) ?? '00';
+        
+        $cmd = "ffmpeg -ss {$h}:{$m}:{$s} -i {$filename} -vframes 1 -q:v 2 {$thumbnailFilename}";
+        
+        exec($cmd);
+        
+        return $thumbnailFilename;
+    }
+    
+    private function getDurationOfVideo(string $filename)
+    {
+        $cmd = "ffmpeg -i {$filename} 2>&1 |grep 'Duration'";
+        
+        exec($cmd, $output);
+        
+        $durationMatchedArr = explode(',', $output[0]?? []);
+        
+        $durationMatchedRes = $durationMatchedArr[0] ?? '';
+        
+        preg_match('/\d+:\d+:\d+/', $durationMatchedRes, $duration);
+        
+        return $duration[0] ?? '';
+    }
+    
+    private function doDurationToSecondsInteger(string $duration)
+    {
+        $secondsInteger = 0;
+        
+        $secondsArr = explode(':', $duration);
+        
+        $h = intval($secondsArr[0]) ?? 0;
+        $m = intval($secondsArr[1]) ?? 0;
+        $s = intval($secondsArr[2]) ?? 0;
+        
+        $h = $h*3600;
+        $m = $m*60;
+        
+        $secondsInteger = $h + $m + $s;
+        
+        return $secondsInteger;
+    }
+    
+    private function sendMail()
     {
         $sendToAddress = config('mail.to.address');
         $sendToName = config('mail.to.name');
-        $sendTitle = 'SEO SUPPLIES';
-        $sendBody = 'FILES NEEDED BY SEO';
-        $attachmentPath = $cvfilename;
+        $sendTitle = 'Release Contents';
+        $sendBody = 'Release Contents';
         
-        $data = [
-            'name' => $this->data['name'],
-            'unique_id' => $this->data['unique_id'],
-            'tags' => $this->data['tags'],
-        ];
+        $data = $this->data;
         
-        Log::info('data', ['data' => $data]);
-        
-        Mail::send('emails.cv', $data, function($message) use ($sendToAddress, $sendToName, $sendTitle, $attachmentPath) {
+        Mail::send('emails.cv', $this->data, function($message) use ($sendToAddress, $sendToName, $sendTitle, $data) {
             $message->to($sendToAddress, $sendToName)
             ->subject($sendTitle)
-            ->attach($attachmentPath);
+            ->attach($data['previewVideoFilename'])
+            ->attach($data['thumbnailFilename']);
         });
-        
     }
 }

@@ -62,6 +62,11 @@ class VideoCut implements ShouldQueue
         if (file_exists($thumbnailFilename)) {
             unlink($thumbnailFilename);
         }
+        
+        rrmdir(env('TORRENT_DOWNLOAD_DIRECTORY'));
+        rrmdir(env('TORRENT_WATCH_DIRECTORY'));
+        rrmdir(env('TORRENT_RESUME_DIRECTORY'));
+        rrmdir(env('TORRENT_TORRENT_DIRECTORY'));
     }
     
     private function getVideoPreview(string $filename, string $duration)

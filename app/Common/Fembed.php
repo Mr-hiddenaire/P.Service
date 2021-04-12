@@ -74,21 +74,13 @@ class Fembed extends FembedUploader
            // Step first: add contents
            $this->contentsService->addContents($data);
            
-           // Step second: local file deletion
-           // TODO
-           //unlink($filepath);
-           
-           // Step third: download info deletion
+           // Step second: download info deletion
            $this->downloadFilesService->deleteInfo([
                ['id', '=', $downloadedFileInfo['id']]
            ]);
            
-           // Step forth: transmission reload
+           // Step third: transmission reload
            $this->transmission->doRemove();
-           
-           // Step fivth: clear transmission cache files
-           // TODO
-           //$this->clearFiles();
        }
    }
    
@@ -132,10 +124,6 @@ class Fembed extends FembedUploader
                    // Step first: add contents
                    $this->contentsService->addContents($data);
                    
-                   // Step second: local file deletion
-                   // TODO
-                   //unlink($filename);
-                   
                    Log::info('Multi: uploaded result to fembed('.$counter.')', ['result' => $res]);
                    
                    $counter = $counter + 1;
@@ -143,53 +131,18 @@ class Fembed extends FembedUploader
            } else {
                $realFilename = basename($filename);
                if ($realFilename != '.' && $realFilename != '..') {
-                   // other file deletion directly
-                   // TODO
-                   //unlink($filename);
+                   exit('There may be caption file occur!!!');
                }
            }
        }
        
-       // Step fivth: delete the directory come up with downloaded file
-       if (file_exists($filepath)) {
-           if (is_dir($filepath)) {
-               // TODO
-               //rmdir($filepath);
-           }
-       }
-       
-       // TODO
-       // Make sure upload successfully.[here implies all files uploaded successfully.]
-       /*
-       if (!file_exists($filepath)) {
-           // Step third: download info deletion
-           $this->downloadFilesService->deleteInfo([
-               ['id', '=', $downloadedFileInfo['id']]
-           ]);
-           
-           // Step forth: transmission reload
-           $this->transmission->doRemove();
-           
-           // Step sixth: clear transmission cache files
-           $this->clearFiles();
-       }
-       */
-       
-       // Step third: download info deletion
+       // Step second: download info deletion
        $this->downloadFilesService->deleteInfo([
            ['id', '=', $downloadedFileInfo['id']]
        ]);
        
-       // Step forth: transmission reload
+       // Step third: transmission reload
        $this->transmission->doRemove();
-   }
-   
-   private function clearFiles()
-   {
-       rrmdir(env('TORRENT_DOWNLOAD_DIRECTORY'));
-       rrmdir(env('TORRENT_WATCH_DIRECTORY'));
-       rrmdir(env('TORRENT_RESUME_DIRECTORY'));
-       rrmdir(env('TORRENT_TORRENT_DIRECTORY'));
    }
    
    /**

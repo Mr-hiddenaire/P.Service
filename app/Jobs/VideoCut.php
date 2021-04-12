@@ -54,6 +54,14 @@ class VideoCut implements ShouldQueue
         $this->data['thumbnailFilename'] = $thumbnailFilename;
         
         $this->sendMail();
+        
+        if (file_exists($previewVideoFilename)) {
+            unlink($previewVideoFilename);
+        }
+        
+        if (file_exists($thumbnailFilename)) {
+            unlink($thumbnailFilename);
+        }
     }
     
     private function getVideoPreview(string $filename, string $duration)

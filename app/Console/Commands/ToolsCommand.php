@@ -30,7 +30,20 @@ class ToolsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'tool:cmd {--method=} {--original-id=} {--archive-priority=} {--data=} {--filepath=} {--sh=} {--sm=} {--ss=} {--eh=} {--em=} {--es=}';
+    protected $signature = 'tool:cmd 
+        {--method=}
+        {--original-id=}
+        {--archive-priority=}
+        {--data=}
+        {--filepath=}
+        {--sh=}
+        {--sm=}
+        {--ss=}
+        {--eh=}
+        {--em=}
+        {--es=}
+        {--video-path=}
+        ';
 
     /**
      * The console command description.
@@ -216,5 +229,16 @@ class ToolsCommand extends Command
             'unique_id' => 'tool',
             'tags' => 'tool',
         ], $filepath, $sh, $sm, $ss, $eh, $em, $es);
+    }
+    
+    private function ffmpeg()
+    {
+        $videoPath = $this->option('video-path');
+        
+        if (!$videoPath) {
+            dd('Video Path required for ffmpeg');
+        }
+        
+        VideoCut::dispatchNow([], $videoPath);
     }
 }

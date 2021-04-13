@@ -63,7 +63,8 @@ class VideoCut implements ShouldQueue
         // Upload thumbnail to Fembed for specific video id
         $this->fembedUploader->doThumbnailUpload($thumbnailFilename, $this->data['video_id']);
         
-        exit('done');
+        var_dump($this->data);exit;
+        
         $this->sendMail();
         
         if (file_exists($previewVideoFilename)) {

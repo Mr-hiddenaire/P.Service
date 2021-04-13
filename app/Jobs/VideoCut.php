@@ -88,12 +88,12 @@ class VideoCut implements ShouldQueue
         $durationArr = explode(':', $duration);
         
         $h = strval($durationArr[0]) ?? '00';
-        $m = strval($duration[1]) ?? '00';
-        $s = strval($duration[2]) ?? '00';
+        $m = strval($durationArr[1]) ?? '00';
+        $s = strval($durationArr[2]) ?? '00';
         
         $cmd = "ffmpeg -ss {$h}:{$m}:{$s} -t 00:00:05 -i {$filename} -c:v libx264 -c:a aac -strict experimental -b:a 98k {$previewVideoFilename}";
         
-        echo "$cmd \n";
+        echo "$cmd \n";exit;
         
         exec($cmd);
         
@@ -111,12 +111,12 @@ class VideoCut implements ShouldQueue
         $durationArr = explode(':', $duration);
         
         $h = strval($durationArr[0]) ?? '00';
-        $m = strval($duration[1]) ?? '00';
-        $s = strval($duration[2]) ?? '00';
+        $m = strval($durationArr[1]) ?? '00';
+        $s = strval($durationArr[2]) ?? '00';
         
         $cmd = "ffmpeg -ss {$h}:{$m}:{$s} -i {$filename} -vframes 1 -q:v 2 {$thumbnailFilename}";
         
-        echo "$cmd \n";
+        echo "$cmd \n";exit;
         
         exec($cmd);
         

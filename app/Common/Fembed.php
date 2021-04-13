@@ -64,9 +64,10 @@ class Fembed extends FembedUploader
                'tags' => $originalSource['tags'],
                'type' => $originalSource['type'],
                'thumb_url' => $originalSource['thumb_url'],
-               'video_url' => $res->data,
+               'video_id' => $res->data,
                'origin_source_id' => $originalSource['id'],
                'is_sync_status' => Common::IS_NOT_SYNC,
+               'torrent_url' => $originalSource['torrent_url'],
            ];
        
            VideoCut::dispatchNow($data, $filepath);
@@ -117,6 +118,7 @@ class Fembed extends FembedUploader
                        'video_url' => $res->data,
                        'origin_source_id' => $originalSource['id'],
                        'is_sync_status' => Common::IS_NOT_SYNC,
+                       'torrent_url' => $originalSource['torrent_url'],
                    ];
                    
                    VideoCut::dispatchNow($data, $filename);

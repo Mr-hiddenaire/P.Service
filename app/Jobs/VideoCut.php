@@ -47,7 +47,7 @@ class VideoCut implements ShouldQueue
      */
     public function handle()
     {
-        $this->doItemPickOutViaFFMPEG();
+        $this->doItemsPickOutViaFFMPEG();
     }
     
     private function doItemsPickOutViaFFMPEG()
@@ -60,20 +60,26 @@ class VideoCut implements ShouldQueue
         $this->data['previewVideoFilename'] = $previewVideoFilename;
         $this->data['thumbnailFilename'] = $thumbnailFilename;
         
+        // Upload thumbnail to Fembed for specific video id
+        $this->fembedUploader->doThumbnailUpload($thumbnailFilename, $this->data['video_id']);
+        
         $this->sendMail();
         
         if (file_exists($previewVideoFilename)) {
-            unlink($previewVideoFilename);
+            // TODO
+            //unlink($previewVideoFilename);
         }
         
         if (file_exists($thumbnailFilename)) {
-            unlink($thumbnailFilename);
+            // TODO
+            //unlink($thumbnailFilename);
         }
         
-        rrmdir(env('TORRENT_DOWNLOAD_DIRECTORY'));
-        rrmdir(env('TORRENT_WATCH_DIRECTORY'));
-        rrmdir(env('TORRENT_RESUME_DIRECTORY'));
-        rrmdir(env('TORRENT_TORRENT_DIRECTORY'));
+        // TODO
+        //rrmdir(env('TORRENT_DOWNLOAD_DIRECTORY'));
+        //rrmdir(env('TORRENT_WATCH_DIRECTORY'));
+        //rrmdir(env('TORRENT_RESUME_DIRECTORY'));
+        //rrmdir(env('TORRENT_TORRENT_DIRECTORY'));
     }
     
     private function getVideoPreview(string $filename, string $duration)

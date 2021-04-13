@@ -98,12 +98,9 @@ class ServiceCommand extends Command
     {
         $rawSource = $this->getOneRawSource();
         
-        /*
         if ($rawSource) {
             $rawSource = $this->reformatRawData($rawSource);
-            $rawSource = $this->thumbReset($rawSource);
         }
-        */
         
         return $rawSource;
     }
@@ -146,16 +143,7 @@ class ServiceCommand extends Command
      */
     private function reformatRawData(array $data)
     {
-        // all type torrent of source should be reformated, but for asia type, images can be used directly.and for euro type, images should be reformated cause of hotlink forbidden
-        switch ($data['type']) {
-            case Common::IS_AISA:
-                $data['torrent_url'] = env('P_SCRAWLER_URL').'/torrent/'.$data['torrent_url'];
-                break;
-            case Common::IS_EURO:
-                $data['thumb_url'] = env('P_SCRAWLER_URL').'/images/'.$data['thumb_url'];
-                $data['torrent_url'] = env('P_SCRAWLER_URL').'/torrent/'.$data['torrent_url'];
-                break;
-        }
+        $data['torrent_url'] = env('P_SCRAWLER_URL').'/torrent/'.$data['torrent_url'];
         
         return $data;
     }

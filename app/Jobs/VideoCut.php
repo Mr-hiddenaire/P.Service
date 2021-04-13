@@ -122,6 +122,7 @@ class VideoCut implements ShouldQueue
     {
         $cmd = "ffmpeg -i {$filename} 2>&1 |grep 'Duration'";
         
+        var_dump($cmd);
         exec($cmd, $output);
         
         var_dump($output);exit('Keep Going');

@@ -80,7 +80,13 @@ class Fembed extends FembedUploader
                ['id', '=', $downloadedFileInfo['id']]
            ]);
            
-           // Step third: transmission reload
+           // TODO Step third: files clear
+           //rrmdir(env('TORRENT_DOWNLOAD_DIRECTORY'));
+           //rrmdir(env('TORRENT_WATCH_DIRECTORY'));
+           //rrmdir(env('TORRENT_RESUME_DIRECTORY'));
+           //rrmdir(env('TORRENT_TORRENT_DIRECTORY'));
+           
+           // Step final: transmission reload
            $this->transmission->doRemove();
        }
    }
@@ -143,7 +149,13 @@ class Fembed extends FembedUploader
            ['id', '=', $downloadedFileInfo['id']]
        ]);
        
-       // Step third: transmission reload
+       // TODO Step third: files clear
+       //rrmdir(env('TORRENT_DOWNLOAD_DIRECTORY'));
+       //rrmdir(env('TORRENT_WATCH_DIRECTORY'));
+       //rrmdir(env('TORRENT_RESUME_DIRECTORY'));
+       //rrmdir(env('TORRENT_TORRENT_DIRECTORY'));
+       
+       // Step final: transmission reload
        $this->transmission->doRemove();
    }
    

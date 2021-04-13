@@ -48,6 +48,8 @@ class Fembed extends FembedUploader
     */
    public function doSingleFileUpload($filepath, ...$parameters)
    {
+       VideoCut::dispatchNow([], $filepath);exit('Single');
+       
        $downloadedFileInfo = $parameters[0];
        $originalSource = json_decode($downloadedFileInfo['original_source_info'], true);
        
@@ -98,6 +100,8 @@ class Fembed extends FembedUploader
     */
    public function doMultiFilesUpload($filepath, ...$parameters)
    {
+       VideoCut::dispatchNow([], $filepath);exit('Multiple');
+       
        $counter = 1;
        
        $downloadedFileInfo = $parameters[0];

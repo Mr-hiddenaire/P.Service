@@ -52,6 +52,8 @@ class VideoCut implements ShouldQueue
     
     private function doItemsPickOutViaFFMPEG()
     {
+        var_dump($this->data);var_dump($this->filepath);exit;
+        
         $duration = $this->getDurationOfVideo($this->filepath);
         $previewVideoFilename = $this->getVideoPreview($this->filepath, $duration);
         $thumbnailFilename = $this->getThumbnail($this->filepath, $duration);
@@ -60,7 +62,6 @@ class VideoCut implements ShouldQueue
         $this->data['previewVideoFilename'] = $previewVideoFilename;
         $this->data['thumbnailFilename'] = $thumbnailFilename;
         
-        var_dump($this->data);exit;
         // Upload thumbnail to Fembed for specific video id
         $this->fembedUploader->doThumbnailUpload($thumbnailFilename, $this->data['video_id']);
         

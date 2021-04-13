@@ -52,6 +52,8 @@ class VideoCut implements ShouldQueue
     
     private function doItemsPickOutViaFFMPEG()
     {
+        var_dump($this->filepath);exit("Done \n");
+        
         $duration = $this->getDurationOfVideo($this->filepath);
         $previewVideoFilename = $this->getVideoPreview($this->filepath, $duration);
         $thumbnailFilename = $this->getThumbnail($this->filepath, $duration);
@@ -120,13 +122,10 @@ class VideoCut implements ShouldQueue
     
     private function getDurationOfVideo(string $filename)
     {
-        var_dump(dirname($filename));exit;
         $cmd = "ffmpeg -i {$filename} 2>&1 |grep 'Duration'";
         
-        var_dump($cmd);
         exec($cmd, $output);
         
-        var_dump($output);exit('Keep Going');
         $durationMatchedArr = explode(',', $output[0]?? []);
         
         $durationMatchedRes = $durationMatchedArr[0] ?? '';

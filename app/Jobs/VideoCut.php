@@ -60,10 +60,9 @@ class VideoCut implements ShouldQueue
         $this->data['previewVideoFilename'] = $previewVideoFilename;
         $this->data['thumbnailFilename'] = $thumbnailFilename;
         
+        var_dump($this->data);exit;
         // Upload thumbnail to Fembed for specific video id
         $this->fembedUploader->doThumbnailUpload($thumbnailFilename, $this->data['video_id']);
-        
-        var_dump($this->data);exit;
         
         $this->sendMail();
         
@@ -94,6 +93,8 @@ class VideoCut implements ShouldQueue
         
         $cmd = "ffmpeg -ss {$h}:{$m}:{$s} -t 00:00:05 -i {$filename} -c:v libx264 -c:a aac -strict experimental -b:a 98k {$previewVideoFilename}";
         
+        echo "$cmd \n";
+        
         exec($cmd);
         
         return $previewVideoFilename;
@@ -114,6 +115,8 @@ class VideoCut implements ShouldQueue
         $s = strval($duration[2]) ?? '00';
         
         $cmd = "ffmpeg -ss {$h}:{$m}:{$s} -i {$filename} -vframes 1 -q:v 2 {$thumbnailFilename}";
+        
+        echo "$cmd \n";
         
         exec($cmd);
         

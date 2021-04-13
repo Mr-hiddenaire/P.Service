@@ -120,7 +120,7 @@ class VideoCut implements ShouldQueue
     
     private function getDurationOfVideo(string $filename)
     {
-        echo dirname($filename);exit;
+        var_dump(dirname($filename));exit;
         $cmd = "ffmpeg -i {$filename} 2>&1 |grep 'Duration'";
         
         var_dump($cmd);

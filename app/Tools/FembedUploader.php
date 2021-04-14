@@ -62,7 +62,7 @@ class FembedUploader
                 'poster' => json_encode([
                     'type' => 'jpg',
                     'content' => base64_encode(@file_get_contents($thumbnailFilename)),
-                ]),
+                ], JSON_UNESCAPED_SLASHES),
             ];
             
             $res = $this->http->post('poster', [

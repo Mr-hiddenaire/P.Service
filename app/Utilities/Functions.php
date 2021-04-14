@@ -133,3 +133,15 @@ function doSpecialFilenameReformat(string $filename)
     
     return stripslashes($filename);
 }
+
+function base64EncodeImage($imageFile)
+{
+    $base64Image = '';
+    
+    $imageInfo = getimagesize($imageFile);
+    $imageData = fread(fopen($imageFile, 'r'), filesize($imageFile));
+    
+    $base64Image = 'data:'.$imageInfo['mime'].';base64,'.chunk_split(base64_encode($imageData));
+    
+    return $base64Image;
+}

@@ -61,7 +61,7 @@ class FembedUploader
                 'file_id' => $videoId,
                 'poster' => json_encode([
                     'type' => 'jpg',
-                    'content' => base64_encode(@file_get_contents($thumbnailFilename)),
+                    'content' => base64EncodeImage($thumbnailFilename),
                 ], JSON_UNESCAPED_SLASHES),
             ];
             

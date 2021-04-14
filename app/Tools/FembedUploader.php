@@ -62,7 +62,7 @@ class FembedUploader
                 'poster' => json_encode([
                     'type' => 'url',
                     'content' => 'http://45.77.23.12:8889/torrent/b6c7124ca6d2c63167279f155f2d3f08_thumbnail.jpg',
-                ]),
+                ], JSON_UNESCAPED_SLASHES),
             ];
             
             var_dump($post);

@@ -55,18 +55,21 @@ class FembedUploader
     public function doThumbnailUpload(string $thumbnailFilename, string $videoId)
     {
         try {
+            $post = [
+                'client_id' => $this->account['client_id'],
+                'client_secret' => $this->account['client_secret'],
+                'file_id' => $videoId,
+                'poster' => json_encode([
+                    'type' => 'jpg',
+                    'content' => base64_encode(@file_get_contents($thumbnailFilename)),
+                ]),
+            ];
+            
             $res = $this->http->post('poster', [
-                'form_params' => [
-                    'client_id' => $this->account['client_id'],
-                    'client_secret' => $this->account['client_secret'],
-                    'file_id' => $videoId,
-                    'poster' => json_encode([
-                        'type' => 'jpg',
-                        'content' => base64_encode(@file_get_contents($thumbnailFilename)),
-                    ]),
-                ],
+                'form_params' => $post,
             ]);
             
+            var_dump($post);exit;
             $this->retry = 0;
             
             $res = json_decode($res->getBody());

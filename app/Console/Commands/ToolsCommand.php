@@ -82,6 +82,8 @@ class ToolsCommand extends Command
         
         $this->fembedUploader = new FembedUploader();
         
+        $this->fembedUploader->SetAccount(config('fembed.account'));
+        
         parent::__construct();
     }
 

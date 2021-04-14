@@ -65,6 +65,7 @@ class FembedUploader
                 ], JSON_UNESCAPED_SLASHES),
             ];
             
+            var_dump($post);
             $res = $this->http->post('poster', [
                 'form_params' => $post,
             ]);

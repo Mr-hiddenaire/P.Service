@@ -47,6 +47,7 @@ class ToolsCommand extends Command
         {--es=}
         {--video-path=}
         {--thumbnail=}
+        {--video_id=}
         ';
 
     /**

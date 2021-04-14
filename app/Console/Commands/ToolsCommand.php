@@ -13,6 +13,7 @@ use App\Constants\Common;
 
 use App\Jobs\VideoCut;
 
+use App\Tools\FembedUploader;
 use Spatie\Sitemap\SitemapGenerator;
 
 class ToolsCommand extends Command
@@ -24,6 +25,8 @@ class ToolsCommand extends Command
     protected $transmission;
     
     protected $fembed;
+    
+    protected $fembedUploader;
     
     /**
      * The name and signature of the console command.
@@ -43,6 +46,7 @@ class ToolsCommand extends Command
         {--em=}
         {--es=}
         {--video-path=}
+        {--thumbnail=}
         ';
 
     /**
@@ -61,7 +65,8 @@ class ToolsCommand extends Command
         ContentsService $contentsService,
         DownloadFilesService $downloadFilesService,
         Transmission $transmission,
-        Fembed $fembed
+        Fembed $fembed,
+        FembedUploader $fembedUploader
         )
     {
         $this->contentsService = $contentsService;
@@ -73,6 +78,8 @@ class ToolsCommand extends Command
         $this->fembed = $fembed;
         
         $this->fembed->doAccountSetting();
+        
+        $this->fembedUploader = new FembedUploader();
         
         parent::__construct();
     }
@@ -240,5 +247,23 @@ class ToolsCommand extends Command
         }
         
         VideoCut::dispatchNow([], $videoPath);
+    }
+    
+    private function uploadThumbnail()
+    {
+        $thumbnailPath = $this->option('thumbnail') ?? '';
+        $videoId = $this->option('video_id') ?? '';
+        
+        if (!$thumbnailPath) {
+            dd('Thumbnail Path required for Fembed Uploader for video poster');
+        }
+        
+        if (!$videoId) {
+            dd('Video Id required for Fembed Uploader for video poster');
+        }
+        
+        $res = $this->fembedUploader->doThumbnailUpload($thumbnailPath, $videoId);
+        
+        dd($res);
     }
 }

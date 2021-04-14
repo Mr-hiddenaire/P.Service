@@ -64,6 +64,7 @@ class VideoCut implements ShouldQueue
         $this->fembedUploader->doThumbnailUpload($thumbnailFilename, $this->data['video_url']);
         
         $this->sendMail();
+        exit("Done \n");
         
         if (file_exists($previewVideoFilename)) {
             // TODO

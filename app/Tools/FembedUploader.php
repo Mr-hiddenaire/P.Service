@@ -69,7 +69,7 @@ class FembedUploader
                 'form_params' => $post,
             ]);
             
-            var_dump($post);exit;
+            var_dump($this->account);exit;
             $this->retry = 0;
             
             $res = json_decode($res->getBody());

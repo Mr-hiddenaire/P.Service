@@ -60,8 +60,8 @@ class FembedUploader
                 'client_secret' => $this->account['client_secret'],
                 'file_id' => $videoId,
                 'poster' => json_encode([
-                    'type' => 'jpeg',
-                    'content' => base64EncodeImage($thumbnailFilename),
+                    'type' => 'url',
+                    'content' => 'http://45.77.23.12:8889/torrent/b6c7124ca6d2c63167279f155f2d3f08_thumbnail.jpg',
                 ]),
             ];
             

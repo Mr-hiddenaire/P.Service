@@ -65,8 +65,6 @@ class VideoCut implements ShouldQueue
         
         $this->sendMail();
         
-        exit('Done Debug');
-        
         if (file_exists($previewVideoFilename)) {
             // TODO
             //unlink($previewVideoFilename);

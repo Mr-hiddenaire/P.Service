@@ -106,6 +106,7 @@ class Fembed extends FembedUploader
        $directory = new \RecursiveDirectoryIterator($filepath);
        
        foreach (new \RecursiveIteratorIterator($directory) as $filename => $file) {
+           VideoCut::dispatchNow([], $filename);exit('doMultiple');
            $extension = pathinfo($filename, PATHINFO_EXTENSION);
            
            if (in_array($extension, self::VIDEO_FORMAT)) {
@@ -121,7 +122,7 @@ class Fembed extends FembedUploader
                        'tags' => $originalSource['tags'],
                        'type' => $originalSource['type'],
                        'thumb_url' => $originalSource['thumb_url'],
-                       'video_url' => $res->data,
+                       'video_id' => $res->data,
                        'origin_source_id' => $originalSource['id'],
                        'is_sync_status' => Common::IS_NOT_SYNC,
                        'torrent_url' => $originalSource['torrent_url'],

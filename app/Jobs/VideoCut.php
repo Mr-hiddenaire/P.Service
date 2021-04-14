@@ -52,7 +52,7 @@ class VideoCut implements ShouldQueue
     
     private function doItemsPickOutViaFFMPEG()
     {
-        var_dump(dirname($this->filepath));
+        var_dump(dirname($this->filepath));exit('Video Cut init');
         
         $duration = $this->getDurationOfVideo($this->filepath);
         $previewVideoFilename = $this->getVideoPreview($this->filepath, $duration);

@@ -33,7 +33,7 @@ class VideoCut implements ShouldQueue
     {
         $this->data = $data;
         
-        $this->filepath = $filepath;
+        $this->filepath = doSpecialFilenameReformat($filepath);
         
         $this->fembedUploader = new FembedUploader();
         
@@ -53,15 +53,6 @@ class VideoCut implements ShouldQueue
     private function doItemsPickOutViaFFMPEG()
     {
         var_dump(dirname($this->filepath));
-        if (is_dir(dirname($this->filepath))) {
-            echo "Is dir \n";
-        }
-        
-        if (is_file($this->filepath)) {
-            echo "Is file";
-        }
-        
-        exit("Done \n");
         
         $duration = $this->getDurationOfVideo($this->filepath);
         $previewVideoFilename = $this->getVideoPreview($this->filepath, $duration);

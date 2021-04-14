@@ -106,7 +106,8 @@ function randomNumber($length)
     return $randstr;
 }
 
-function rrmdir($dir) {
+function rrmdir($dir)
+{
     if (is_dir($dir)) {
         $objects = scandir($dir);
         foreach ($objects as $object) {
@@ -120,4 +121,15 @@ function rrmdir($dir) {
             }
         }
     }
+}
+
+function doSpecialFilenameReformat(string $filename)
+{
+    $specialCharacters = [' ', '\\', '|', '\[', '\]', ];
+    
+    foreach ($specialCharacters as $specialCharacter) {
+        $filename = str_replace($specialCharacter, '\\'.$specialCharacter, $filename);
+    }
+    
+    return stripslashes($filename);
 }

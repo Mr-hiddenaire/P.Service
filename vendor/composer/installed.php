@@ -6,11 +6,20 @@
     'aliases' => 
     array (
     ),
-    'reference' => '8407025ee9f7aee72ee2895655d9acd314411035',
+    'reference' => '61564fb408a7fc3ea39f27d7c8db1c7df3de8b09',
     'name' => 'laravel/laravel',
   ),
   'versions' => 
   array (
+    'aws/aws-sdk-php' => 
+    array (
+      'pretty_version' => '3.178.9',
+      'version' => '3.178.9.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '89710500988a8a7d77f1282fcf6a1d0ad8297eaf',
+    ),
     'composer/ca-bundle' => 
     array (
       'pretty_version' => '1.2.9',
@@ -433,7 +442,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '8407025ee9f7aee72ee2895655d9acd314411035',
+      'reference' => '61564fb408a7fc3ea39f27d7c8db1c7df3de8b09',
     ),
     'laravel/tinker' => 
     array (
@@ -497,6 +506,15 @@
       array (
       ),
       'reference' => '1cb1cde8e8dd0f70cc0fe51354a59acad9302084',
+    ),
+    'mtdowling/jmespath.php' => 
+    array (
+      'pretty_version' => '2.6.0',
+      'version' => '2.6.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '42dae2cbd13154083ca6d70099692fef8ca84bfb',
     ),
     'myclabs/deep-copy' => 
     array (

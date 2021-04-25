@@ -2,6 +2,38 @@
 
 All notable changes to `Browsershot` will be documented in this file
 
+## 3.40.2 - 2020-11-11
+
+- revert changes from previous version
+
+## 3.40.1 - 2020-11-06
+
+- prevent local files from being rendered
+
+## 3.40.0 - 2020-10-07
+
+- added `base64Screenshot`
+
+## 3.39.0 - 2020-09-24
+
+- add `usePipe` to use pipe instead of WebSocket (#423)
+
+## 3.38.0 - 2020-09-22
+
+- pass puppeteer to `callChrome()` (#399)
+
+## 3.37.2 - 2020-07-22
+
+- Replace emulateMedia call with emulateMediaType (#411)
+
+## 3.37.1 - 2020-07-09
+
+- account for the removal of require('puppeteer/DeviceDescriptors') (#406)
+
+## 3.37.0 - 2020-06-17
+
+- get the list of triggered requests (#402)
+
 ## 3.36.0 - 2020-04-19
 
 - add use of WS Endpoint option (#390)

@@ -15,8 +15,16 @@ const request = args[0].startsWith('-f ')
     ? JSON.parse(fs.readFileSync(new URL(args[0].substring(3))))
     : JSON.parse(args[0]);
 
+const requestsList = [];
+
 const getOutput = async (page, request) => {
     let output;
+
+    if (request.action == 'requestsList') {
+        output = JSON.stringify(requestsList);
+
+        return output;
+    }
 
     if (request.action == 'evaluate') {
         output = await page.evaluate(request.options.pageFunction);
@@ -29,11 +37,12 @@ const getOutput = async (page, request) => {
     return output.toString('base64');
 };
 
-const callChrome = async () => {
+const callChrome = async pup => {
     let browser;
     let page;
     let output;
     let remoteInstance;
+	const puppet = (pup || puppeteer);
 
     try {
         if (request.options.remoteInstanceUrl || request.options.browserWSEndpoint ) {
@@ -50,20 +59,20 @@ const callChrome = async () => {
             }
 
             try {
-                browser = await puppeteer.connect( options );
+                browser = await puppet.connect( options );
 
                 remoteInstance = true;
             } catch (exception) { /** does nothing. fallbacks to launching a chromium instance */}
         }
 
         if (!browser) {
-            browser = await puppeteer.launch({
+            browser = await puppet.launch({
                 ignoreHTTPSErrors: request.options.ignoreHttpsErrors,
                 executablePath: request.options.executablePath,
-                args: request.options.args || []
+                args: request.options.args || [],
+                pipe: request.options.pipe || false
             });
         }
-
 
         page = await browser.newPage();
 
@@ -71,8 +80,16 @@ const callChrome = async () => {
             await page.setJavaScriptEnabled(false);
         }
 
+        await page.setRequestInterception(true);
+
+        page.on('request', request => {
+            requestsList.push({
+                url: request.url(),
+            });
+            request.continue();
+        });
+
         if (request.options && request.options.disableImages) {
-            await page.setRequestInterception(true);
             page.on('request', request => {
                 if (request.resourceType() === 'image')
                     request.abort();
@@ -80,9 +97,8 @@ const callChrome = async () => {
                     request.continue();
             });
         }
-        
-        if (request.options && request.options.blockDomains) { 
-            await page.setRequestInterception(true);
+
+        if (request.options && request.options.blockDomains) {
             var domainsArray = JSON.parse(request.options.blockDomains);
             page.on('request', request => {
                 const hostname = URLParse(request.url()).hostname;
@@ -93,8 +109,7 @@ const callChrome = async () => {
             });
         }
 
-        if (request.options && request.options.blockUrls) { 
-            await page.setRequestInterception(true);
+        if (request.options && request.options.blockUrls) {
             var urlsArray = JSON.parse(request.options.blockUrls);
             page.on('request', request => {
                 urlsArray.forEach(function(value){
@@ -103,7 +118,7 @@ const callChrome = async () => {
                 request.continue();
             });
         }
-        
+
         if (request.options && request.options.dismissDialogs) {
             page.on('dialog', async dialog => {
                 await dialog.dismiss();
@@ -115,13 +130,13 @@ const callChrome = async () => {
         }
 
         if (request.options && request.options.device) {
-            const devices = require('puppeteer/DeviceDescriptors');
+            const devices = puppeteer.devices;
             const device = devices[request.options.device];
             await page.emulate(device);
         }
 
         if (request.options && request.options.emulateMedia) {
-            await page.emulateMedia(request.options.emulateMedia);
+            await page.emulateMediaType(request.options.emulateMedia);
         }
 
         if (request.options && request.options.viewport) {
@@ -251,4 +266,8 @@ const callChrome = async () => {
     }
 };
 
-callChrome();
+if (require.main === module) {
+	callChrome();
+}
+
+exports.callChrome = callChrome;

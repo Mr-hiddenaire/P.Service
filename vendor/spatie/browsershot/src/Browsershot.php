@@ -504,14 +504,21 @@ class Browsershot
         return $this->callBrowser($command);
     }
 
+    public function base64Screenshot(): string
+    {
+        $command = $this->createScreenshotCommand();
+
+        return $this->callBrowser($command);
+    }
+
     public function screenshot(): string
     {
         if ($this->imageManipulations->isEmpty()) {
             $command = $this->createScreenshotCommand();
 
-            $encoded_image = $this->callBrowser($command);
+            $encodedImage = $this->callBrowser($command);
 
-            return base64_decode($encoded_image);
+            return base64_decode($encodedImage);
         }
 
         $temporaryDirectory = (new TemporaryDirectory())->create();
@@ -554,6 +561,13 @@ class Browsershot
         $command = $this->createEvaluateCommand($pageFunction);
 
         return $this->callBrowser($command);
+    }
+
+    public function triggeredRequests(): array
+    {
+        $command = $this->createTriggeredRequestsListCommand();
+
+        return json_decode($this->callBrowser($command), true);
     }
 
     public function applyManipulations(string $imagePath)
@@ -623,6 +637,13 @@ class Browsershot
         return $this->createCommand($url, 'evaluate', $options);
     }
 
+    public function createTriggeredRequestsListCommand(): array
+    {
+        $url = $this->html ? $this->createTemporaryHtmlFile() : $this->url;
+
+        return $this->createCommand($url, 'requestsList');
+    }
+
     public function setRemoteInstance(string $ip = '127.0.0.1', int $port = 9222): self
     {
         // assuring that ip and port does actually contains a value
@@ -638,6 +659,13 @@ class Browsershot
         if (! is_null($endpoint)) {
             $this->setOption('browserWSEndpoint', $endpoint);
         }
+
+        return $this;
+    }
+
+    public function usePipe(): self
+    {
+        $this->setOption('pipe', true);
 
         return $this;
     }

@@ -1,3 +1,5 @@
+<p align="center"><img src="/art/socialcard.png" alt="Social Card of Spatie's Browsershot"></p>
+
 # Convert a webpage to an image or pdf using headless Chrome
 
 [![Latest Version](https://img.shields.io/github/release/spatie/browsershot.svg?style=flat-square)](https://github.com/spatie/browsershot/releases)
@@ -35,9 +37,24 @@ Browsershot also can get the body of an html page after JavaScript has been exec
 Browsershot::url('https://example.com')->bodyHtml(); // returns the html of the body
 ```
 
+If you wish to retrieve an array list with all of the requests that the page triggered you can do so:
+
+```php
+$requests = Browsershot::url('https://example.com')
+    ->triggeredRequests();
+
+foreach ($requests as $request) {
+    $url = $request['url']; //https://example.com/
+}
+```
+
+**`triggeredRequests()` works well with `waitUntilNetworkIdle` as described [here](#waiting-for-lazy-loaded-resources)**
+
 ## Support us
 
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us). 
+[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/browsershot.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/browsershot)
+
+We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
 
 We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
 
@@ -61,7 +78,7 @@ On a [Forge](https://forge.laravel.com) provisioned Ubuntu 16.04 server you can 
 
 ```bash
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-sudo apt-get install -y nodejs gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget
+sudo apt-get install -y nodejs gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget libgbm-dev
 sudo npm install --global --unsafe-perm puppeteer
 sudo chmod -R o+rx /usr/lib/node_modules/puppeteer/.local-chromium
 ```
@@ -218,6 +235,15 @@ Browsershot::url('https://example.com')
     ->save($pathToImage);
 ```
 
+### Getting a screenshot as base64
+
+If you need the base64 version of a screenshot you can use the `base64Screenshot` method. This can come in handy when you don't want to save the screenshot on disk.
+
+```php
+$base64Data = Browsershot::url('https://example.com')
+    ->base64Screenshot();
+```
+
 #### Manipulating the image
 
 You can use all the methods [spatie/image](https://docs.spatie.be/image/v1) provides. Here's an example where we create a greyscale image:
@@ -228,7 +254,6 @@ Browsershot::url('https://example.com')
     ->greyscale()
     ->save($pathToImage);
 ```
-
 
 #### Taking a full page screenshot
 
@@ -266,7 +291,7 @@ Browsershot::url('https://example.com')
 
 #### Device emulation
 
-You can emulate a device view with the `device` method. The devices' names can be found [Here](https://github.com/puppeteer/puppeteer/blob/master/src/DeviceDescriptors.js).
+You can emulate a device view with the `device` method. The devices' names can be found [Here](https://github.com/puppeteer/puppeteer/blob/main/src/common/DeviceDescriptors.ts).
 
 ```php
 $browsershot = new Browsershot('https://example.com', true);
@@ -335,7 +360,7 @@ Browsershot::url('https://example.com')
     ->blockUrls($urlsList)
     ->save($pathToImage);
 ```
-    
+
 #### Block Domains
 You can completely block connections to specific domains using the `blockDomains()` method.
 Useful to block advertisements and trackers to make screenshot creation faster.
@@ -392,7 +417,6 @@ Browsershot::url('https://example.com')
     ->setOption('addStyleTag', json_encode(['content' => 'body{ font-size: 14px; }']))
     ->save($pathToImage);
 ```
-
 
 #### Output directly to the browser
 You can output the image directly to the browser using the `screenshot()` method.
@@ -470,7 +494,6 @@ Browsershot::html($someHtml)
 ```
 
 Optionally you can give a custom unit to the `margins` as the fifth parameter.
-
 
 #### Headers and footers
 
@@ -750,10 +773,19 @@ Browsershot::url('https://example.com')
    ...
 ```
 
+#### Using a pipe instead of a WebSocket
+
+If you want to connect to the browser over a pipe instead of a WebSocket, you can use:
+
+```php
+Browsershot::url('https://example.com')
+   ->usePipe()
+   ...
+```
+
 ## Related packages
 
 * Laravel wrapper: [laravel-browsershot](https://github.com/verumconsilium/laravel-browsershot)
-
 
 ## Contributing
 
@@ -767,12 +799,14 @@ If you discover any security related issues, please email freek@spatie.be instea
 
 If you're not able to install Node and Puppeteer, take a look at [v2 of browsershot](https://github.com/spatie/browsershot/tree/2.4.1), which uses Chrome headless CLI to take a screenshot. `v2` is not maintained anymore, but should work pretty well.
 
-If using headless Chrome does not work for you take a lookat at `v1` of this package which uses the abandoned `PhantomJS` binary.
+If using headless Chrome does not work for you take a look at at `v1` of this package which uses the abandoned `PhantomJS` binary.
 
 ## Credits
 
 - [Freek Van der Herten](https://github.com/freekmurze)
 - [All Contributors](../../contributors)
+
+And a special thanks to [Caneco](https://twitter.com/caneco) for the logo ✨
 
 ## License
 

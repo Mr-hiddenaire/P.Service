@@ -2,8 +2,8 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-sitemap.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-sitemap)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/spatie/laravel-sitemap/run-tests?label=tests)
-[![StyleCI](https://styleci.io/repos/65549848/shield)](https://styleci.io/repos/65549848)
+![Test Status](https://img.shields.io/github/workflow/status/spatie/laravel-sitemap/run-tests?label=tests)
+![Code Style Status](https://img.shields.io/github/workflow/status/spatie/laravel-sitemap/Check%20&%20fix%20styling?label=code%20style)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-sitemap.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-sitemap)
 
 This package can generate a sitemap without you having to add urls to it manually. This works by crawling your entire site.
@@ -61,15 +61,18 @@ The generator has [the ability to execute JavaScript](https://github.com/spatie/
 
 You can also use one of your available filesystem disks to write the sitemap to.
 ```php
-SitemapGenerator::create('https://example.com')->writeToDisk('public', 'sitemap.xml');
+SitemapGenerator::create('https://example.com')->getSitemap()->writeToDisk('public', 'sitemap.xml');
 ```
 
 ## Support us
 
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us). 
+Learn how to create a package like this one, by watching our premium video course:
+
+[![Laravel Package training](https://spatie.be/github/package-training.jpg)](https://laravelpackage.training)
+
+We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
 
 We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
-
 
 ## Installation
 
@@ -82,7 +85,6 @@ composer require spatie/laravel-sitemap
 The package will automatically register itself.
 
 If you want to update your sitemap automatically and frequently you need to perform [some extra steps](https://github.com/spatie/laravel-sitemap#generating-the-sitemap-frequently).
-
 
 ## Configuration
 
@@ -203,7 +205,7 @@ class CustomCrawlProfile extends CrawlProfile
             return false;
         }
         
-        return $url->path() === '/';
+        return $url->getPath() === '/';
     }
 }
 ```
@@ -277,7 +279,7 @@ SitemapGenerator::create('https://example.com')
        // Links present on the contact page won't be added to the
        // sitemap unless they are present on a crawlable page.
        
-       return strpos($url->path(), '/contact') === false;
+       return strpos($url->getPath(), '/contact') === false;
    })
    ->writeToFile($sitemapPath);
 ```
@@ -316,7 +318,6 @@ The sitemap generator can execute JavaScript on each page so it will discover li
 Under the hood, [headless Chrome](https://github.com/spatie/browsershot) is used to execute JavaScript. Here are some pointers on [how to install it on your system](https://github.com/spatie/browsershot#requirements).
 
 The package will make an educated guess as to where Chrome is installed on your system. You can also manually pass the location of the Chrome binary to  `executeJavaScript()`.
-
 
 #### Manually adding links
 
@@ -417,8 +418,6 @@ SitemapGenerator::create('https://example.com')
     ->writeToFile(public_path('sitemap.xml'));
 
 ```
-
-
 
 ## Generating the sitemap frequently
 

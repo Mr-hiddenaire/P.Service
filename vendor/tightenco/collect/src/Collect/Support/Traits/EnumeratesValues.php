@@ -3,6 +3,7 @@
 namespace Tightenco\Collect\Support\Traits;
 
 use CachingIterator;
+use Closure;
 use Exception;
 use Tightenco\Collect\Contracts\Support\Arrayable;
 use Tightenco\Collect\Contracts\Support\Jsonable;
@@ -46,9 +47,31 @@ trait EnumeratesValues
      * @var array
      */
     protected static $proxies = [
-        'average', 'avg', 'contains', 'each', 'every', 'filter', 'first',
-        'flatMap', 'groupBy', 'keyBy', 'map', 'max', 'min', 'partition',
-        'reject', 'some', 'sortBy', 'sortByDesc', 'sum', 'unique', 'until',
+        'average',
+        'avg',
+        'contains',
+        'each',
+        'every',
+        'filter',
+        'first',
+        'flatMap',
+        'groupBy',
+        'keyBy',
+        'map',
+        'max',
+        'min',
+        'partition',
+        'reject',
+        'skipUntil',
+        'skipWhile',
+        'some',
+        'sortBy',
+        'sortByDesc',
+        'sum',
+        'takeUntil',
+        'takeWhile',
+        'unique',
+        'until',
     ];
 
     /**
@@ -148,7 +171,7 @@ trait EnumeratesValues
     {
         call_user_func_array([$this, 'dump'], $args);
 
-        die(1);
+        exit(1);
     }
 
     /**
@@ -158,8 +181,8 @@ trait EnumeratesValues
      */
     public function dump()
     {
-        (new static(func_get_args()))
-            ->push($this)
+        (new Collection(func_get_args()))
+            ->push($this->all())
             ->each(function ($item) {
                 VarDumper::dump($item);
             });
@@ -389,13 +412,9 @@ trait EnumeratesValues
      */
     public function sum($callback = null)
     {
-        if (is_null($callback)) {
-            $callback = function ($value) {
-                return $value;
-            };
-        } else {
-            $callback = $this->valueRetriever($callback);
-        }
+        $callback = is_null($callback)
+            ? $this->identity()
+            : $this->valueRetriever($callback);
 
         return $this->reduce(function ($result, $item) use ($callback) {
             return $result + $callback($item);
@@ -705,28 +724,18 @@ trait EnumeratesValues
     }
 
     /**
-     * Take items in the collection until condition is met.
+     * Take items in the collection until the given condition is met.
      *
-     * @param  mixed  $key
+     * This is an alias to the "takeUntil" method.
+     *
+     * @param  mixed  $value
      * @return static
+     *
+     * @deprecated Use the "takeUntil" method directly.
      */
     public function until($value)
     {
-        $passed = [];
-
-        $callback = $this->useAsCallable($value) ? $value : function ($item) use ($value) {
-            return $item === $value;
-        };
-
-        foreach ($this as $key => $item) {
-            if ($callback($item, $key)) {
-                break;
-            }
-
-            $passed[$key] = $item;
-        }
-
-        return new static($passed);
+        return $this->takeUntil($value);
     }
 
     /**
@@ -791,25 +800,6 @@ trait EnumeratesValues
     public function getCachingIterator($flags = CachingIterator::CALL_TOSTRING)
     {
         return new CachingIterator($this->getIterator(), $flags);
-    }
-
-    /**
-     * Count the number of items in the collection using a given truth test.
-     *
-     * @param  callable|null  $callback
-     * @return static
-     */
-    public function countBy($callback = null)
-    {
-        if (is_null($callback)) {
-            $callback = function ($value) {
-                return $value;
-            };
-        }
-
-        return new static($this->groupBy($callback)->map(function ($value) {
-            return $value->count();
-        }));
     }
 
     /**
@@ -949,6 +939,44 @@ trait EnumeratesValues
 
         return function ($item) use ($value) {
             return data_get($item, $value);
+        };
+    }
+
+    /**
+     * Make a function to check an item's equality.
+     *
+     * @param  mixed  $value
+     * @return \Closure
+     */
+    protected function equality($value)
+    {
+        return function ($item) use ($value) {
+            return $item === $value;
+        };
+    }
+
+    /**
+     * Make a function using another function, by negating its result.
+     *
+     * @param  \Closure  $callback
+     * @return \Closure
+     */
+    protected function negate(Closure $callback)
+    {
+        return function (...$params) use ($callback) {
+            return ! $callback(...$params);
+        };
+    }
+
+    /**
+     * Make a function that returns what's passed to it.
+     *
+     * @return \Closure
+     */
+    protected function identity()
+    {
+        return function ($value) {
+            return $value;
         };
     }
 }

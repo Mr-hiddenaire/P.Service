@@ -11,7 +11,19 @@
         }
     ],
     "require": {
-        "php": ">=5.4"
+        "php": "^7.1 || ^8.0"
+    },
+    "require-dev": {
+        "ergebnis/composer-normalize": "^2.8.0",
+        "ergebnis/license": "^1.0.0",
+        "ergebnis/php-cs-fixer-config": "^2.2.1",
+        "phpunit/phpunit": "^7.5.20"
+    },
+    "config": {
+        "platform": {
+            "php": "7.1.33"
+        },
+        "sort-packages": true
     },
     "autoload": {
         "psr-4": {
@@ -24,4 +36,3 @@
         }
     }
 }
-

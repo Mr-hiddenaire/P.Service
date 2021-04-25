@@ -2,6 +2,22 @@
 
 All notable changes to `spatie/crawler` will be documented in this file.
 
+## 4.7.5 - 2020-09-12
+
+- treat connection exceptions as request exceptions
+
+## 4.7.4 - 2020-07-15
+
+- fix: method and property name error (#311)
+
+## 4.7.3 - 2020-07-15
+
+- add crawler option to allow crawl links with rel="nofollow" (#310)
+
+## 4.7.2 - 2020-05-06
+
+- only crawl links that are completely parsed
+
 ## 4.7.1 - 2020-04-14
 
 - fix curl streaming responses (#295)

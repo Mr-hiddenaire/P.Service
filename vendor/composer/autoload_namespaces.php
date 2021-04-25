@@ -7,6 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'stringEncode' => array($vendorDir . '/paquettg/string-encode/src'),
-    'Parsedown' => array($vendorDir . '/erusev/parsedown'),
     'Mockery' => array($vendorDir . '/mockery/mockery/library'),
 );

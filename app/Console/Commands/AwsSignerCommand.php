@@ -10,6 +10,12 @@ class AwsSignerCommand extends Command
 {
     protected $cookieSigner;
     
+    protected $keyPairId;
+    
+    protected $privateKey;
+    
+    protected $policies;
+    
     /**
      * The name and signature of the console command.
      *
@@ -31,10 +37,11 @@ class AwsSignerCommand extends Command
      */
     public function __construct()
     {
-        $keyPairId = config('aws.cloudfront.sign.key_pair_id');
-        $privateKey = config('aws.cloudfront.sign.private_key_file_path');
+        $this->keyPairId = config('aws.cloudfront.sign.key_pair_id');
+        $this->privateKey = config('aws.cloudfront.sign.private_key_file_path');
+        $this->policies = json_encode(config('aws_policies.policies'), JSON_UNESCAPED_SLASHES);
         
-        $this->cloudFrontClient = new CookieSigner($keyPairId, $privateKey);
+        $this->cookieSigner = new CookieSigner($this->keyPairId, $this->privateKey);
         
         parent::__construct();
     }
@@ -60,7 +67,9 @@ class AwsSignerCommand extends Command
     
     protected function doCookieSign()
     {
-        echo 'do cookie sign';
+        $sign = $this->cookieSigner->getSignedCookie(null, null, $this->policies);
+        
+        echo json_encode($sign, JSON_UNESCAPED_SLASHES);
     }
     
     protected function doUrlSign()

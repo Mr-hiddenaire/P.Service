@@ -10,3 +10,4 @@ config/fembed.php
 config/webdriver.php
 public/sitemap.xml
 config/aws/sign/private_key.pem
+config/aws_policies.php

@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\Uploader\VUploaderCommand::class,
         \App\Console\Commands\ToolsCommand::class,
         \App\Console\Commands\SitemapCommand::class,
+        \App\Console\Commands\AwsSignerCommand::class,
     ];
 
     /**

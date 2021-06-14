@@ -4,11 +4,11 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-use Aws\CloudFront\CookieSigner;
+use Aws\CloudFront\CloudFrontClient;
 
 class AwsSignerCommand extends Command
 {
-    protected $cookieSigner;
+    protected $cfClient;
     
     protected $keyPairId;
     
@@ -41,7 +41,11 @@ class AwsSignerCommand extends Command
         $this->privateKey = config('aws.cloudfront.sign.private_key_file_path');
         $this->policies = json_encode(config('aws_policies.policies'), JSON_UNESCAPED_SLASHES);
         
-        $this->cookieSigner = new CookieSigner($this->keyPairId, $this->privateKey);
+        $this->cfClient = new CloudFrontClient([
+            'profile' => 'default',
+            'region' => 'us-east-1',
+            'version' => 'latest',
+        ]);
         
         parent::__construct();
     }
@@ -67,7 +71,11 @@ class AwsSignerCommand extends Command
     
     protected function doCookieSign()
     {
-        $sign = $this->cookieSigner->getSignedCookie(null, null, $this->policies);
+        $sign = $this->cfClient->getSignedCookie([
+            'key_pair_id' => $this->keyPairId,
+            'private_key' => $this->privateKey,
+            'policy' => $this->policies,
+        ]);
         
         echo json_encode($sign, JSON_UNESCAPED_SLASHES);
     }

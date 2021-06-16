@@ -13,9 +13,9 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        \App\Console\Commands\Uploader\FembedUploaderCommand::class,
-        \App\Console\Commands\Torrent\ServiceCommand::class,
-        \App\Console\Commands\Uploader\VUploaderCommand::class,
+        \App\Console\Commands\TransmissionCallbackCommand::class,
+        \App\Console\Commands\TorrentDownloaderCommand::class,
+        \App\Console\Commands\VideoUploaderCommand::class,
         \App\Console\Commands\ToolsCommand::class,
         \App\Console\Commands\SitemapCommand::class,
         \App\Console\Commands\AwsSignerCommand::class,

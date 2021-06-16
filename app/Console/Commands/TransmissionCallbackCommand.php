@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\Uploader;
+namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -9,7 +9,7 @@ use App\Constants\Common;
 
 use App\Services\SourceFactory\DownloadFilesService;
 
-class FembedUploaderCommand extends Command
+class TransmissionCallbackCommand extends Command
 {
     protected $fembed;
     
@@ -20,14 +20,14 @@ class FembedUploaderCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'fembed:upload {info}';
+    protected $signature = 'transmission:callback:main {info}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Download information writting locally';
+    protected $description = 'Callback here when transmission done for download';
 
     /**
      * Create a new command instance.

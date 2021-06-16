@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\Uploader;
+namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
@@ -10,7 +10,7 @@ use App\Common\Fembed;
 
 use App\Services\SourceFactory\DownloadFilesService;
 
-class VUploaderCommand extends Command
+class VideoUploaderCommand extends Command
 {
     protected $fembed;
     
@@ -23,7 +23,7 @@ class VUploaderCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'do:video:upload';
+    protected $signature = 'video:uploader:upload';
 
     /**
      * The console command description.

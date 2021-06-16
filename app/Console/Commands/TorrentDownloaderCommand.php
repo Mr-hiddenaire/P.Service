@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\Torrent;
+namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
@@ -12,7 +12,7 @@ use App\Tools\ImagesUploader;
 
 use Illuminate\Support\Facades\Log;
 
-class ServiceCommand extends Command
+class TorrentDownloaderCommand extends Command
 {
     protected $contentsService;
     
@@ -25,7 +25,7 @@ class ServiceCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'command:torrent:download';
+    protected $signature = 'torrent:downloader:download';
 
     /**
      * The console command description.

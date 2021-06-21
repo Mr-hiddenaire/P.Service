@@ -1,0 +1,1 @@
+<div>{{ $body }} <br /></div>

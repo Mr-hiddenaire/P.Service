@@ -269,4 +269,80 @@ class ToolsCommand extends Command
         
         dd($res);
     }
+    
+    private function doFileGroup()
+    {
+        $result = [];
+        
+        $str = '84d2f48082dfcb802bee268d9a93b040.avi, a9bfba9fb43af0ffb1f0780254e85eb3.avi';
+        #$str = 'a9bfba9fb43af0ffb1f0780254e85eb3.avi, 0561edaf067bcd3ab4862cb16e5b7893.vtt';
+        #$str = '84d2f48082dfcb802bee268d9a93b040.avi, a9bfba9fb43af0ffb1f0780254e85eb3.avi,0561edaf067bcd3ab4862cb16e5b7893.vtt';
+        
+        $files = explode(',', $str);
+        
+        // Filter out video and subtitle file
+        // Only one pair
+        if (count($files) == 2) {
+            $haveSubtitle = false;
+            
+            foreach ($files as $file) {
+                $pathInfo = pathinfo($file);
+                $fileExtension = $pathInfo['extension'];
+                $subtitleFormats = config('formats.subtitle');
+                if (in_array($fileExtension, $subtitleFormats)) {
+                    $haveSubtitle = true;
+                }
+            }
+            
+            if ($haveSubtitle) {
+                foreach ($files as $file) {
+                    $pathInfo = pathinfo($file);
+                    $fileExtension = $pathInfo['extension'];
+                    $videoFormats = config('formats.video');
+                    
+                    if (in_array($fileExtension, $videoFormats)) {
+                        $result['videos'][] = $file;
+                    }
+                }
+                
+                foreach ($files as $file) {
+                    $pathInfo = pathinfo($file);
+                    $fileExtension = $pathInfo['extension'];
+                    $subtitleFormats = config('formats.subtitle');
+                    
+                    if (in_array($fileExtension, $subtitleFormats)) {
+                        $result['subtitle'] = $file;
+                    }
+                }
+            } else {
+                // Filter out all video files and drop all subtitle files
+                foreach ($files as $file) {
+                    $pathInfo = pathinfo($file);
+                    $fileExtension = $pathInfo['extension'];
+                    $videoFormats = config('formats.video');
+                    
+                    if (in_array($fileExtension, $videoFormats)) {
+                        $result['videos'][] = $file;
+                    }
+                }
+                
+                $result['subtitle'] = [];
+            }
+        } else {
+            // Filter out all video files and drop all subtitle files
+            foreach ($files as $file) {
+                $pathInfo = pathinfo($file);
+                $fileExtension = $pathInfo['extension'];
+                $videoFormats = config('formats.video');
+                
+                if (in_array($fileExtension, $videoFormats)) {
+                    $result['videos'][] = $file;
+                }
+            }
+            
+            $result['subtitle'] = [];
+        }
+        
+        var_dump($result);
+    }
 }

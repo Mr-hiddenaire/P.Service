@@ -32,4 +32,13 @@ class Common
     const MAX_PAGE_SIZE = 100;
     
     const IS_UPOADING = 1;
+    
+    // Hls making
+    const HLS_IS_MAKING = 1;
+    
+    // Hls cutting done
+    const HLS_DONE_CUTTING = 2;
+    
+    // Hls upload done
+    const HLS_DONE_UPLOAD = 3;
 }

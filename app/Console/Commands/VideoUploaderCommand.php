@@ -6,24 +6,21 @@ use Illuminate\Console\Command;
 
 use Illuminate\Support\Facades\Log;
 use App\Constants\Common;
-use App\Common\Fembed;
 
 use App\Services\SourceFactory\DownloadFilesService;
 
 class VideoUploaderCommand extends Command
 {
-    protected $fembed;
-    
     protected $downloadFilesService;
     
-    protected $transmission;
+    protected $validUploader = ['aws', 'fembed'];
     
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'video:uploader:upload';
+    protected $signature = 'video:uploader:upload {uploader_type?}';
 
     /**
      * The console command description.
@@ -37,15 +34,8 @@ class VideoUploaderCommand extends Command
      *
      * @return void
      */
-    public function __construct(
-        Fembed $fembed,
-        DownloadFilesService $downloadFilesService
-        )
+    public function __construct(DownloadFilesService $downloadFilesService)
     {
-        $this->fembed = $fembed;
-        
-        $this->fembed->doAccountSetting();
-        
         $this->downloadFilesService = $downloadFilesService;
         
         parent::__construct();
@@ -57,6 +47,35 @@ class VideoUploaderCommand extends Command
      * @return mixed
      */
     public function handle()
+    {
+        $uploaderType = $this->argument('uploader_type') ?? 'aws';
+        $uploaderType = strtolower($uploaderType);
+        
+        if (!in_array($uploaderType, $this->validUploader)) {
+            dd('Only support uploader type '.implode(' | ', $this->validUploader).' .');
+        }
+        
+        switch ($uploaderType) {
+            case 'aws':
+                $this->doAWSUpload();
+                break;
+            case 'fembed':
+                $this->doFEMBEDUpload();
+                break;
+            default:
+                break;
+        }
+    }
+    
+    private function doAWSUpload()
+    {
+        
+    }
+    
+    /**
+     * @deprecated
+     */
+    private function doFEMBEDUpload()
     {
         $downloadedFileInfo = $this->downloadFilesService->getInfo([
             ['download_finish', '=', Common::IS_DOWNLOAD_FINISHED]

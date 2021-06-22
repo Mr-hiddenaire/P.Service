@@ -107,11 +107,18 @@ class Hls implements ShouldQueue
         }
     }
     
+    private function doSubtitleMove()
+    {
+        if (file_exists($this->downloadedPath.DIRECTORY_SEPARATOR.$this->data['subtitle'])) {
+            rename($this->downloadedPath.DIRECTORY_SEPARATOR.$this->data['subtitle'], $this->hlsStorePath.DIRECTORY_SEPARATOR.basename($this->data['subtitle']));
+        }
+    }
+    
     private function setHlsCuttingDone(string $thumbnail, string $preview)
     {
         $this->downloadFileRecordsService->updateInfo([['id', '=', $this->data['id']]], [
-            'thumbnail' => $thumbnail,
-            'preview' => $preview,
+            'thumbnail' => basename($thumbnail),
+            'preview' => basename($preview),
             'status' => Common::HLS_DONE_CUTTING,
         ]);
         

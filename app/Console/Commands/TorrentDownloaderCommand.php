@@ -61,7 +61,7 @@ class TorrentDownloaderCommand extends Command
      */
     public function handle()
     {
-        $downloadInfo = $this->downloadFilesService->getInfo([], ['*'], ['id', 'DESC']);
+        $downloadInfo = $this->downloadFilesService->getInfo([['status', '=', Common::DOWNLOAD_DELETION_ENABLE]], ['*'], ['id', 'DESC']);
         
         if ($downloadInfo) {
             $this->downloadFilesService->deleteInfo([

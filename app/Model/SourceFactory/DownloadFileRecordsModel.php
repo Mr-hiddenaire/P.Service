@@ -24,6 +24,17 @@ class DownloadFileRecordsModel extends BaseModel
         }
     }
     
+    public function getAll($where, $fields, array $orderBy)
+    {
+        $res = self::where($where)->orderBy($orderBy[0], $orderBy[1])->get($fields);
+        
+        if ($res) {
+            return $res->toArray();
+        } else {
+            return [];
+        }
+    }
+    
     public function addInfo(array $data)
     {
         return self::insert($data);

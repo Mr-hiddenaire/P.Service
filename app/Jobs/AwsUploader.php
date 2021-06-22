@@ -109,6 +109,16 @@ class AwsUploader implements ShouldQueue
             $this->doOriginalFileDeletion();
             $this->doHlsDeletion();
             $this->doThumbnailDeletion();
+            
+            // Specify downloaded files all done upload. so the specify download file deletion available
+            $downloadedFileRecords = $this->downloadFileRecordsService->getAll([['original_source_id', '=', $this->data['original_source_id']]], ['*'], ['id', 'DESC']);
+            $downloadedFileRecordsStatus = array_unique(array_column($downloadedFileRecords, 'status'));
+            
+            if (count($downloadedFileRecordsStatus) == 1 && $downloadedFileRecordsStatus[0] == Common::HLS_DONE_UPLOAD) {
+                $downloadFilesService->updateInfo([['original_source_id', '=', $this->data['original_source_id']]], [
+                    'status' => Common::DOWNLOAD_DELETION_ENABLE,
+                ]);
+            }
         }
     }
     

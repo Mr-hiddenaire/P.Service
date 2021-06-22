@@ -41,4 +41,10 @@ class Common
     
     // Hls upload done
     const HLS_DONE_UPLOAD = 3;
+    
+    // Download file deletion enable
+    const DOWNLOAD_DELETION_ENABLE = 1;
+    
+    // Download file deletion disable
+    const DOWNLOAD_DELETION_DISABLE = 0;
 }

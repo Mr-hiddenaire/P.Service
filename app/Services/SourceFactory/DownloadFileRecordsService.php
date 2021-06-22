@@ -19,6 +19,11 @@ class DownloadFileRecordsService extends BaseService
         return $this->downloadFileRecordsModel->getInfo($where, $fields, $orderBy);
     }
     
+    public function getAll($where, $fields, array $orderBy)
+    {
+        return $this->downloadFileRecordsModel->getAll($where, $fields, $orderBy);
+    }
+    
     public function addInfo(array $data)
     {
         return $this->downloadFileRecordsModel->addInfo($data);

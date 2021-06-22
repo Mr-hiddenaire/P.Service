@@ -32,18 +32,12 @@ class AwsUploader implements ShouldQueue
     
     protected $downloadFileRecordsService;
     
-    protected $fullDuration;
-    
-    protected $thumbnail;
-    
-    protected $preview;
-    
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(string $downloadBasePath, array $data, DownloadFileRecordsService $downloadFileRecordsService, string $fullDuration, string $thumbnail, string $preview)
+    public function __construct(string $downloadBasePath, array $data, DownloadFileRecordsService $downloadFileRecordsService)
     {
         $this->downloadFileRecordsService = $downloadFileRecordsService;
         
@@ -54,12 +48,6 @@ class AwsUploader implements ShouldQueue
         $this->setFilename();
         
         $this->setHlsStorePath();
-        
-        $this->fullDuration = $fullDuration;
-        
-        $this->thumbnail = $thumbnail;
-        
-        $this->preview = $preview;
     }
 
     private function setDownloadedPath(string $downloadedPath = '')
@@ -69,9 +57,7 @@ class AwsUploader implements ShouldQueue
     
     private function setData(array $data = [])
     {
-        $refreshData = $this->downloadFileRecordsService->getInfo([['id', '=', $data['id']], ['status', '=', Common::HLS_DONE_CUTTING]], ['*'], ['id', 'DESC']);
-        
-        $this->data = $refreshData;
+        $this->data = $data;
     }
     
     private function setHlsStorePath()
@@ -112,11 +98,12 @@ class AwsUploader implements ShouldQueue
                 'uniqueId' => $downloadFilesInfoArr['unique_id'],
                 'name' => $downloadFilesInfoArr['name'],
                 'tags' => $downloadFilesInfoArr['tags'],
-                'duration' => $this->fullDuration,
-                'thumbnail' => $this->thumbnail,
-                'preview' => $this->preview,
-                'preview_url' => env('CF_ENDPOINT').'/hls-bundle/'.$this->filename.'/'.basename($this->preview),
+                'duration' => $this->data['fullDuration'],
+                'thumbnail' => $this->data['thumbnail'],
+                'preview' => $this->data['preview'],
+                'preview_url' => env('CF_ENDPOINT').'/hls-bundle/'.$this->filename.'/'.basename($this->data['preview']),
                 'hls_url' => env('CF_ENDPOINT').'/hls-bundle/'.$this->filename.'/'.$this->filename.'.m3u8',
+                'subtitle' => env('CF_ENDPOINT').'/hls-bundle/'.$this->filename.'/'.$this->data['subtitle'],
             ]);
             
             $this->doOriginalFileDeletion();
@@ -136,17 +123,23 @@ class AwsUploader implements ShouldQueue
     
     private function doThumbnailDeletion()
     {
-        if (file_exists($this->thumbnail)) {
-            unlink($this->thumbnail);
+        if (file_exists($this->data['thumbnail'])) {
+            unlink($this->data['thumbnail']);
         }
     }
     
     private function doOriginalFileDeletion()
     {
-        $originalFilePath = $this->downloadedPath.DIRECTORY_SEPARATOR.$this->data['video'];
+        $originalFilePathOfVideo = $this->downloadedPath.DIRECTORY_SEPARATOR.$this->data['video'];
         
-        if (file_exists($originalFilePath)) {
-            unlink($originalFilePath);
+        if (file_exists($originalFilePathOfVideo)) {
+            unlink($originalFilePathOfVideo);
+        }
+        
+        $originalFilePathOfSubtitle = $this->downloadedPath.DIRECTORY_SEPARATOR.$this->data['subtitle'];
+        
+        if (file_exists($originalFilePathOfSubtitle)) {
+            unlink($originalFilePathOfSubtitle);
         }
     }
     

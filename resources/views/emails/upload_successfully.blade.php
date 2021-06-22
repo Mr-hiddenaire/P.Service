@@ -5,3 +5,4 @@
 <div>Duration: {{ $duration }}</div>
 <div>Preview Url: {{ $preview_url }}</div>
 <div>Hls Url: {{ $hls_url }}</div>
+<div>Subtitle Url: {{ $subtitle }}</div>

@@ -100,9 +100,14 @@ class Hls implements ShouldQueue
             
             if ($return == 0) {
                 $this->setHlsCuttingDone($thumbnail, $preview);
+                $this->doSubtitleMove();
+                
+                $this->data['thumbnail'] = $thumbnail;
+                $this->data['preview'] = $preview;
+                $this->data['fullDuration'] = $fullDuration;
                 
                 // Upload HLS to S3
-                AwsUploader::dispatch($this->downloadedPath, $this->data, $this->downloadFileRecordsService, $fullDuration, $thumbnail, $preview);
+                AwsUploader::dispatch($this->downloadedPath, $this->data, $this->downloadFileRecordsService);
             }
         }
     }

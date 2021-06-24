@@ -114,7 +114,7 @@ class Hls implements ShouldQueue
     
     private function doSubtitleMove()
     {
-        if (file_exists($this->downloadedPath.DIRECTORY_SEPARATOR.$this->data['subtitle'])) {
+        if (is_file($this->downloadedPath.DIRECTORY_SEPARATOR.$this->data['subtitle'])) {
             rename($this->downloadedPath.DIRECTORY_SEPARATOR.$this->data['subtitle'], $this->hlsStorePath.DIRECTORY_SEPARATOR.basename($this->data['subtitle']));
         }
     }

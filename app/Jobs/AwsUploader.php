@@ -93,6 +93,12 @@ class AwsUploader implements ShouldQueue
             $s3UploadRes = $s3Client->uploadDirectory($this->hlsStorePath, 'dailyporns', 'hls-bundle/'.basename($this->hlsStorePath));
             $this->setHlsUploadDone();
             
+            if (is_file($this->downloadedPath.DIRECTORY_SEPARATOR.$this->data['subtitle'])) {
+                $subtitle = env('CF_ENDPOINT').'/hls-bundle/'.$this->filename.'/'.$this->data['subtitle'];
+            } else {
+                $subtitle = 'None';
+            }
+            
             SendMail::dispatch(2, 'Hls files uploaded successfully', [
                 'body' => 'All Hls files are uploaded successfully ^_^',
                 'uniqueId' => $downloadFilesInfoArr['unique_id'],
@@ -103,7 +109,7 @@ class AwsUploader implements ShouldQueue
                 'preview' => $this->data['preview'],
                 'preview_url' => env('CF_ENDPOINT').'/hls-bundle/'.$this->filename.'/'.basename($this->data['preview']),
                 'hls_url' => env('CF_ENDPOINT').'/hls-bundle/'.$this->filename.'/'.$this->filename.'.m3u8',
-                'subtitle' => env('CF_ENDPOINT').'/hls-bundle/'.$this->filename.'/'.$this->data['subtitle'],
+                'subtitle' => $subtitle,
             ]);
             
             $this->doOriginalFileDeletion();
@@ -148,7 +154,7 @@ class AwsUploader implements ShouldQueue
         
         $originalFilePathOfSubtitle = $this->downloadedPath.DIRECTORY_SEPARATOR.$this->data['subtitle'];
         
-        if (file_exists($originalFilePathOfSubtitle)) {
+        if (is_file($originalFilePathOfSubtitle)) {
             unlink($originalFilePathOfSubtitle);
         }
     }

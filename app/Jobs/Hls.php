@@ -203,7 +203,7 @@ class Hls implements ShouldQueue
         $m = strval($durationArr[1]) ?? '00';
         $s = strval($durationArr[2]) ?? '00';
         
-        $cmd = "ffmpeg -ss {$h}:{$m}:{$s} -t 00:00:05 -y -i {$this->fullFilenamePath} -c:v libx264 -c:a aac -strict experimental -b:a 98k {$previewVideoFilename}";
+        $cmd = "ffmpeg -ss {$h}:{$m}:{$s} -t 00:00:03 -y -i {$this->fullFilenamePath} -vf scale=362:204 -c:v libx264 -strict experimental -b:a 98k -an {$previewVideoFilename}";
         
         exec($cmd);
         

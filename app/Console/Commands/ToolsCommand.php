@@ -48,7 +48,7 @@ class ToolsCommand extends Command
         {--video-path=}
         {--thumbnail=}
         {--video_id=}
-        {downloaded_file_record_id=}
+        {--downloaded_file_record_id=}
         ';
 
     /**

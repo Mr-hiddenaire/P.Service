@@ -48,6 +48,7 @@ class ToolsCommand extends Command
         {--video-path=}
         {--thumbnail=}
         {--video_id=}
+        {downloaded_file_record_id=}
         ';
 
     /**
@@ -344,5 +345,22 @@ class ToolsCommand extends Command
         }
         
         var_dump($result);
+    }
+    
+    private function doAWSupload()
+    {
+        $downloadedFileRecordId = $this->option('downloaded_file_record_id') ?? 0;
+        
+        if (!$downloadedFileRecordId) {
+            dd('Downloaded File Record Id Required');
+        }
+        
+        $downloadedFileRecordService = new \App\Services\SourceFactory\DownloadFileRecordsService(new \App\Model\SourceFactory\DownloadFileRecordsModel());
+        
+        $info = $downloadedFileRecordService->getInfo([['id', '=', $downloadedFileRecordId]], ['*'], ['id', 'DESC']);
+        
+        $downloadedPath = env('TORRENT_DOWNLOAD_DIRECTORY');
+        
+        \App\Jobs\AwsUploader::dispatch($downloadedPath, $info, $downloadedFileRecordService);
     }
 }

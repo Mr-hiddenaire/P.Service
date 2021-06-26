@@ -6,13 +6,11 @@ use Illuminate\Console\Command;
 
 use App\Services\OriginalSource\ContentsService;
 use App\Services\SourceFactory\DownloadFilesService;
-use App\Common\Fembed;
 
 use App\Constants\Common;
 
 use App\Jobs\VideoCut;
 
-use App\Tools\FembedUploader;
 use Spatie\Sitemap\SitemapGenerator;
 
 class ToolsCommand extends Command
@@ -64,22 +62,12 @@ class ToolsCommand extends Command
      */
     public function __construct(
         ContentsService $contentsService,
-        DownloadFilesService $downloadFilesService,
-        Fembed $fembed,
-        FembedUploader $fembedUploader
+        DownloadFilesService $downloadFilesService
         )
     {
         $this->contentsService = $contentsService;
         
         $this->downloadFilesService = $downloadFilesService;
-        
-        $this->fembed = $fembed;
-        
-        $this->fembed->doAccountSetting();
-        
-        $this->fembedUploader = new FembedUploader();
-        
-        $this->fembedUploader->SetAccount(config('fembed.account'));
         
         parent::__construct();
     }

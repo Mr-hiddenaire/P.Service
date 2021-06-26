@@ -6,7 +6,6 @@ use Illuminate\Console\Command;
 
 use App\Services\OriginalSource\ContentsService;
 use App\Services\SourceFactory\DownloadFilesService;
-use App\Common\Transmission;
 use App\Common\Fembed;
 
 use App\Constants\Common;
@@ -66,7 +65,6 @@ class ToolsCommand extends Command
     public function __construct(
         ContentsService $contentsService,
         DownloadFilesService $downloadFilesService,
-        Transmission $transmission,
         Fembed $fembed,
         FembedUploader $fembedUploader
         )
@@ -74,8 +72,6 @@ class ToolsCommand extends Command
         $this->contentsService = $contentsService;
         
         $this->downloadFilesService = $downloadFilesService;
-        
-        $this->transmission = $transmission;
         
         $this->fembed = $fembed;
         

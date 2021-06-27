@@ -89,7 +89,7 @@ class Hls implements ShouldQueue
                 mkdir($this->hlsStorePath, 0777, true);
             }
             
-            $cmd = "ffmpeg -y -i {$this->fullFilenamePath} -codec:v libx264 -codec:a mp3 -map 0 -f ssegment -segment_format mpegts -segment_list {$this->hlsStorePath}".DIRECTORY_SEPARATOR."{$this->filename}.m3u8 -segment_time 10 {$this->hlsStorePath}".DIRECTORY_SEPARATOR."{$this->filename}_%03d.ts";
+            $cmd = "ffmpeg -y -i {$this->fullFilenamePath} -codec:v libx264 -codec:a aac -map 0 -f ssegment -segment_format mpegts -segment_list {$this->hlsStorePath}".DIRECTORY_SEPARATOR."{$this->filename}.m3u8 -segment_time 10 {$this->hlsStorePath}".DIRECTORY_SEPARATOR."{$this->filename}_%03d.ts";
             
             $thumbnailArr = $this->getThumbnail();
             $thumbnail = $thumbnailArr['thumbnail'];

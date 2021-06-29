@@ -202,7 +202,9 @@ class TorrentDownloaderCommand extends Command
      */
     private function randType()
     {
-        $rdmn = rand(Common::IS_AISA, Common::IS_EURO);
+        //$rdmn = rand(Common::IS_AISA, Common::IS_EURO);
+        $rdmn = rand(Common::IS_AISA);
+        //$rdmn = rand(Common::IS_EURO);
         
         return $rdmn;
     }

@@ -185,7 +185,7 @@ class TorrentDownloaderCommand extends Command
     {
         $rdmn = $this->randType();
         
-        $where = [['pick_up_status', '=', Common::IS_NOT_PICKED_UP], ['type', '=', $rdmn]];
+        $where = [['pick_up_status', '=', Common::IS_NOT_PICKED_UP], ['type', '=', $rdmn], 'is_scraped', '=', Common::SCRAPED_FINISH];
         
         $data = $this->contentsService->getInfo($where, ['*'], ['id', 'ASC']);
         

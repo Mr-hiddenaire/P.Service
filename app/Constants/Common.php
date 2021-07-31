@@ -16,6 +16,9 @@ class Common
     // Not picked up from original source yet
     const IS_NOT_PICKED_UP = 0;
     
+    // Scraped finish (include all of done of list,detail,torrent finder,torrent downloaded)
+    const SCRAPED_FINISH = 3;
+    
     // Downloaded by transmission finished
     const IS_DOWNLOAD_FINISHED = 1;
     

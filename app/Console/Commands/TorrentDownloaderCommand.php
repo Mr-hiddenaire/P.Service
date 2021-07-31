@@ -123,7 +123,7 @@ class TorrentDownloaderCommand extends Command
     {
         $resourceHandler = fopen($rawSource['torrent_url'], 'rb');
         
-        $targetHandler = fopen(env('TORRENT_WATCH_DIRECTORY').DIRECTORY_SEPARATOR.pathinfo($rawSource['torrent_url'])['filename'].'.torrent', 'wb');
+        $targetHandler = fopen(env('TORRENT_WATCH_DIRECTORY').DIRECTORY_SEPARATOR.pathinfo($rawSource['torrent_path'])['filename'].'.torrent', 'wb');
         
         if ($resourceHandler === false || $targetHandler === false) {
             
@@ -151,7 +151,7 @@ class TorrentDownloaderCommand extends Command
      */
     private function reformatRawData(array $data)
     {
-        $data['torrent_url'] = env('P_SCRAWLER_URL').'/torrent/'.$data['torrent_url'];
+        $data['torrent_url'] = env('P_CRAWLER_URL').'/torrent/'.$data['torrent_path'];
         
         return $data;
     }
@@ -202,9 +202,7 @@ class TorrentDownloaderCommand extends Command
      */
     private function randType()
     {
-        //$rdmn = rand(Common::IS_AISA, Common::IS_EURO);
-        $rdmn = rand(Common::IS_AISA, Common::IS_AISA);
-        //$rdmn = rand(Common::IS_EURO, Common::IS_EURO);
+        $rdmn = rand(Common::IS_AISA, Common::IS_EURO);
         
         return $rdmn;
     }

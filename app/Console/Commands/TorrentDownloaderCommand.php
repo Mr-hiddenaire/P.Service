@@ -25,7 +25,7 @@ class TorrentDownloaderCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'torrent:downloader:download';
+    protected $signature = 'torrent:downloader:download {--type=}';
 
     /**
      * The console command description.
@@ -61,6 +61,8 @@ class TorrentDownloaderCommand extends Command
      */
     public function handle()
     {
+        $type = $this->option('type') ?? 0;
+        
         $downloadInfo = $this->downloadFilesService->getInfo([], ['*'], ['id', 'DESC']);
         
         if ($downloadInfo) {
@@ -73,7 +75,7 @@ class TorrentDownloaderCommand extends Command
             }
         }
         
-        $originalSource = $this->pickUpOneItem();
+        $originalSource = $this->pickUpOneItem($type);
         
         // random type maybe empty data
         if ($originalSource) {
@@ -102,9 +104,9 @@ class TorrentDownloaderCommand extends Command
      * Pick up one item from original source library
      * @return array
      */
-    private function pickUpOneItem()
+    private function pickUpOneItem($type)
     {
-        $rawSource = $this->getOneRawSource();
+        $rawSource = $this->getOneRawSource($type);
         
         if ($rawSource) {
             $rawSource = $this->reformatRawData($rawSource);
@@ -181,9 +183,13 @@ class TorrentDownloaderCommand extends Command
      * Get original source
      * @return array
      */
-    private function getOneRawSource()
+    private function getOneRawSource($type)
     {
-        $rdmn = $this->randType();
+        if ($type) {
+            $rdmn = $type;
+        } else {
+            $rdmn = $this->randType();
+        }
         
         $where = [['pick_up_status', '=', Common::IS_NOT_PICKED_UP], ['type', '=', $rdmn], ['is_scraped', '=', Common::SCRAPED_FINISH]];
         

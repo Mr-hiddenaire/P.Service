@@ -67,7 +67,7 @@ class HlsCommand extends Command
             dd('There is no data need to make hls, mail has been sent !');
         }
         
-        $hlsMaking = $this->downloadFileRecordsService->updateInfo([['id', '=', $data['id']]], [
+        $this->downloadFileRecordsService->updateInfo([['id', '=', $data['id']]], [
             'status' => Common::HLS_IS_MAKING
         ]);
         

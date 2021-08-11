@@ -81,12 +81,12 @@ class VideoUploaderCommand extends Command
             ['download_finish', '=', Common::IS_DOWNLOAD_FINISHED]
         ], ['*'], ['id', 'DESC']);
         
-        if ($downloadedFileInfo && $downloadedFileInfo['status'] != Common::IS_UPOADING && $downloadedFileInfo['filename']) {
+        if ($downloadedFileInfo && $downloadedFileInfo['status'] != Common::IS_UPLOADING && $downloadedFileInfo['filename']) {
             // Set uploading
             $this->downloadFilesService->updateInfo([
                 ['id', '=', $downloadedFileInfo['id']]
             ], [
-                'status' => Common::IS_UPOADING,
+                'status' => Common::IS_UPLOADING,
             ]);
             
             $filepath = env('TORRENT_DOWNLOAD_DIRECTORY').DIRECTORY_SEPARATOR.$downloadedFileInfo['filename'];

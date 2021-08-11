@@ -34,7 +34,7 @@ class Common
     // The max page size
     const MAX_PAGE_SIZE = 100;
     
-    const IS_UPOADING = 1;
+    const IS_UPLOADING = 1;
     
     // Hls making
     const HLS_IS_MAKING = 1;

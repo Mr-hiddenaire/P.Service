@@ -17,7 +17,8 @@
         "paquettg/php-html-parser": "^2.1",
         "predis/predis": "~1.1@dev",
         "spatie/laravel-sitemap": "^5.7",
-        "symfony/http-foundation": "4.4.7"
+        "symfony/http-foundation": "4.4.7",
+	"league/flysystem": "1.1.4"
     },
     "require-dev": {
         "composer/composer": "^1.10",

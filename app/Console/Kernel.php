@@ -2,6 +2,13 @@
 
 namespace App\Console;
 
+use App\Console\Commands\AwsSignerCommand;
+use App\Console\Commands\HlsCommand;
+use App\Console\Commands\SitemapCommand;
+use App\Console\Commands\ToolsCommand;
+use App\Console\Commands\TorrentDownloaderCommand;
+use App\Console\Commands\TransmissionCallbackCommand;
+use App\Console\Commands\VideoUploaderCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -13,19 +20,19 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        \App\Console\Commands\TransmissionCallbackCommand::class,
-        \App\Console\Commands\TorrentDownloaderCommand::class,
-        \App\Console\Commands\VideoUploaderCommand::class,
-        \App\Console\Commands\ToolsCommand::class,
-        \App\Console\Commands\SitemapCommand::class,
-        \App\Console\Commands\AwsSignerCommand::class,
-        \App\Console\Commands\HlsCommand::class,
+        TransmissionCallbackCommand::class,
+        TorrentDownloaderCommand::class,
+        VideoUploaderCommand::class,
+        ToolsCommand::class,
+        SitemapCommand::class,
+        AwsSignerCommand::class,
+        HlsCommand::class,
     ];
 
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param Schedule $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)

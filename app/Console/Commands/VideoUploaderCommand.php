@@ -32,7 +32,7 @@ class VideoUploaderCommand extends Command
     /**
      * Create a new command instance.
      *
-     * @return void
+     * @param DownloadFilesService $downloadFilesService
      */
     public function __construct(DownloadFilesService $downloadFilesService)
     {

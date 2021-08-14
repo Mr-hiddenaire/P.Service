@@ -157,8 +157,7 @@ class VideoCut implements ShouldQueue
         $sendToAddress = config('mail.to.address');
         $sendToName = config('mail.to.name');
         $sendTitle = 'Release Contents';
-        $sendBody = 'Release Contents';
-        
+
         $data = $this->data;
         
         Mail::send('emails.cv', $this->data, function($message) use ($sendToAddress, $sendToName, $sendTitle, $data) {

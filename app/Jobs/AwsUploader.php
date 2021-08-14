@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Model\SourceFactory\DownloadFilesModel;
+use App\Services\SourceFactory\DownloadFilesService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -13,8 +15,6 @@ use App\Services\SourceFactory\DownloadFileRecordsService;
 use Aws\S3\S3Client;
 
 use App\Constants\Common;
-
-use App\Jobs\SendMail;
 
 class AwsUploader implements ShouldQueue
 {
@@ -28,14 +28,14 @@ class AwsUploader implements ShouldQueue
     
     protected $filename;
     
-    protected $fullFilenamePath;
-    
     protected $downloadFileRecordsService;
-    
+
     /**
      * Create a new job instance.
      *
-     * @return void
+     * @param string $downloadBasePath
+     * @param array $data
+     * @param DownloadFileRecordsService $downloadFileRecordsService
      */
     public function __construct(string $downloadBasePath, array $data, DownloadFileRecordsService $downloadFileRecordsService)
     {
@@ -79,7 +79,7 @@ class AwsUploader implements ShouldQueue
      */
     public function handle()
     {
-        $downloadFilesService = new \App\Services\SourceFactory\DownloadFilesService(new \App\Model\SourceFactory\DownloadFilesModel());
+        $downloadFilesService = new DownloadFilesService(new DownloadFilesModel());
         $downloadFilesInfo = $downloadFilesService->getInfo([['original_source_id', '=', $this->data['original_source_id']]], ['*'], ['id', 'DESC']);
         $downloadFilesInfoArr = json_decode($downloadFilesInfo['original_source_info'], true);
         
@@ -89,8 +89,8 @@ class AwsUploader implements ShouldQueue
                 'region' => 'us-east-1',
                 'version' => 'latest',
             ]);
-            
-            $s3UploadRes = $s3Client->uploadDirectory($this->hlsStorePath, 'dailyporns', 'hls-bundle/'.basename($this->hlsStorePath));
+
+            $s3Client->uploadDirectory($this->hlsStorePath, 'dailyporns', 'hls-bundle/'.basename($this->hlsStorePath));
             $this->setHlsUploadDone();
             
             if (is_file($this->downloadedPath.DIRECTORY_SEPARATOR.$this->data['subtitle'])) {

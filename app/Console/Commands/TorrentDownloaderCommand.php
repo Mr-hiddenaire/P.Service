@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
 
 use App\Services\OriginalSource\ContentsService;
@@ -37,7 +38,9 @@ class TorrentDownloaderCommand extends Command
     /**
      * Create a new command instance.
      *
-     * @return void
+     * @param ContentsService $contentsService
+     * @param DownloadFilesService $downloadFilesService
+     * @param ImagesUploader $imagesUploader
      */
     public function __construct(
         ContentsService $contentsService,
@@ -58,6 +61,7 @@ class TorrentDownloaderCommand extends Command
      * Execute the console command.
      *
      * @return mixed
+     * @throws Exception
      */
     public function handle()
     {
@@ -118,7 +122,7 @@ class TorrentDownloaderCommand extends Command
     /**
      * Download torrent from self server
      * @param array $rawSource
-     * @throws \Exception
+     * @throws Exception
      * @return boolean
      */
     private function tDownload($rawSource)
@@ -129,13 +133,13 @@ class TorrentDownloaderCommand extends Command
         
         if ($resourceHandler === false || $targetHandler === false) {
             
-            throw new \Exception('Cant open file');
+            throw new Exception('Cant open file');
         }
         
         while (!feof($resourceHandler)) {
             if (fwrite($targetHandler, fread($resourceHandler, 1024)) === false) {
                 
-                throw new \Exception('Cant write file');
+                throw new Exception('Cant write file');
             }
         }
         
@@ -157,30 +161,10 @@ class TorrentDownloaderCommand extends Command
         
         return $data;
     }
-    
-    /**
-     * Upload images to ibb for euro`s type source
-     * @param array $data
-     * @return array
-     */
-    private function thumbReset(array $data)
-    {
-        // Euro`s image can not be hotlink.so upload to free hosting.
-        if (isset($data['type']) && $data['type'] == Common::IS_EURO) {
-            if (isset($data['thumb_url']) && $data['thumb_url']) {
-                $ibbRes = $this->imagesUploader->Ibb($data['thumb_url']);
-                
-                if (isset($ibbRes['thumb_url']) && $ibbRes['thumb_url']) {
-                    $data['thumb_url'] = $ibbRes['thumb_url'];
-                }
-            }
-        }
-        
-        return $data;
-    }
-    
+
     /**
      * Get original source
+     * @param $type
      * @return array
      */
     private function getOneRawSource($type)
@@ -208,8 +192,6 @@ class TorrentDownloaderCommand extends Command
      */
     private function randType()
     {
-        $rdmn = rand(Common::IS_AISA, Common::IS_EURO);
-        
-        return $rdmn;
+        return rand(Common::IS_AISA, Common::IS_EURO);
     }
 }

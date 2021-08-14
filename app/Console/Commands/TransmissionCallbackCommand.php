@@ -32,7 +32,8 @@ class TransmissionCallbackCommand extends Command
     /**
      * Create a new command instance.
      *
-     * @return void
+     * @param DownloadFilesService $downloadFilesService
+     * @param DownloadFileRecordsService $downloadFileRecordsService
      */
     public function __construct(DownloadFilesService $downloadFilesService, DownloadFileRecordsService $downloadFileRecordsService)
     {
@@ -92,6 +93,7 @@ class TransmissionCallbackCommand extends Command
     
     private function doFilesParse(string $downloadedFiles)
     {
+        $result = [];
         $files = explode(',', $downloadedFiles);
         
         // Filter out video and subtitle file

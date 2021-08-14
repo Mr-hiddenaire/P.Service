@@ -25,10 +25,14 @@ class StorageLinkCommand extends Command
      *
      * @return void
      */
-    public function fire()
+    public function handle()
     {
         if (file_exists(public_path('storage'))) {
             return $this->error('The "public/storage" directory already exists.');
+        }
+
+        if (is_link(public_path('storage'))) {
+            $this->laravel->make('files')->delete(public_path('storage'));
         }
 
         $this->laravel->make('files')->link(

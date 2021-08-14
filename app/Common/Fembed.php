@@ -5,30 +5,104 @@ namespace App\Common;
 use App\Tools\FembedUploader;
 use Illuminate\Support\Facades\Log;
 
+use App\Services\SourceFactory\ContentsService;
+use App\Services\SourceFactory\DownloadFilesService;
+
+use App\Common\Transmission;
+
+use App\Constants\Common;
+
+use App\Jobs\VideoCut;
+
 class Fembed extends FembedUploader
 {
+    protected $contentsService;
+    
+    protected $downloadFilesService;
+    
+    protected $transmission;
+    
     const VIDEO_FORMAT = [
         'mkv', 'wmv', 'avi', 'mp4', 'mpeg4', 'mpegps', 'flv', '3gp', 'webm', 'mov', 'mpg', 'm4v',
     ];
     
-   public function __construct()
+   public function __construct(
+       ContentsService $contentsService,
+       DownloadFilesService $downloadFilesService,
+       Transmission $transmission
+       )
    {
+       $this->contentsService = $contentsService;
+       
+       $this->transmission = $transmission;
+       
+       $this->downloadFilesService = $downloadFilesService;
+       
        parent::__construct();
    }
    
-   public function dealWithFile($filepath)
+   /**
+    * Upload single file
+    * @param string $filepath
+    * @return \stdClass
+    */
+   public function doSingleFileUpload($filepath, ...$parameters)
    {
+       $downloadedFileInfo = $parameters[0];
+       $originalSource = json_decode($downloadedFileInfo['original_source_info'], true);
+       
        $this->doFileSetting($filepath);
        
        $res = $this->Run();
        
-       Log::info('Uploaded result to fembed: '.json_encode($res));
+       Log::info('Single: uploaded result to fembed', ['result' => $res]);
        
-       return $res;
+       if ($res->result == 'success') {
+           $data = [
+               'name' => $originalSource['name'],
+               'unique_id' => $originalSource['unique_id'],
+               'tags' => $originalSource['tags'],
+               'type' => $originalSource['type'],
+               'thumb_url' => $originalSource['thumb_url'],
+               'video_url' => $res->data,
+               'origin_source_id' => $originalSource['id'],
+               'is_sync_status' => Common::IS_NOT_SYNC,
+               'torrent_url' => $originalSource['torrent_url'],
+           ];
+       
+           VideoCut::dispatchNow($data, $filepath);
+           
+           // Step first: add contents
+           $this->contentsService->addContents($data);
+           
+           // Step second: download info deletion
+           $this->downloadFilesService->deleteInfo([
+               ['id', '=', $downloadedFileInfo['id']]
+           ]);
+           
+           // TODO Step third: files clear
+           //rrmdir(env('TORRENT_DOWNLOAD_DIRECTORY'));
+           //rrmdir(env('TORRENT_WATCH_DIRECTORY'));
+           //rrmdir(env('TORRENT_RESUME_DIRECTORY'));
+           //rrmdir(env('TORRENT_TORRENT_DIRECTORY'));
+           
+           // Step final: transmission reload
+           $this->transmission->doRemove();
+       }
    }
    
-   public function dealWithDirectory($filepath)
+   /**
+    * Upload multi files under the directory
+    * @param string $filepath
+    * @return \stdClass
+    */
+   public function doMultiFilesUpload($filepath, ...$parameters)
    {
+       $counter = 1;
+       
+       $downloadedFileInfo = $parameters[0];
+       $originalSource = json_decode($downloadedFileInfo['original_source_info'], true);
+       
        $directory = new \RecursiveDirectoryIterator($filepath);
        
        foreach (new \RecursiveIteratorIterator($directory) as $filename => $file) {
@@ -36,19 +110,60 @@ class Fembed extends FembedUploader
            
            if (in_array($extension, self::VIDEO_FORMAT)) {
                
-               Log::info('filename is (with directory):'.$filename.PHP_EOL);
-               
                $this->doFileSetting($filename);
                
                $res = $this->Run();
                
-               Log::info('Uploaded result to fembed: '.json_encode($res));
-               
-               return $res;
+               if ($res->result == 'success') {
+                   $data = [
+                       'name' => $originalSource['name'].' part('.$counter.')',
+                       'unique_id' => $originalSource['unique_id'],
+                       'tags' => $originalSource['tags'],
+                       'type' => $originalSource['type'],
+                       'thumb_url' => $originalSource['thumb_url'],
+                       'video_url' => $res->data,
+                       'origin_source_id' => $originalSource['id'],
+                       'is_sync_status' => Common::IS_NOT_SYNC,
+                       'torrent_url' => $originalSource['torrent_url'],
+                   ];
+                   
+                   VideoCut::dispatchNow($data, $filename);
+                   
+                   // Step first: add contents
+                   $this->contentsService->addContents($data);
+                   
+                   Log::info('Multi: uploaded result to fembed('.$counter.')', ['result' => $res]);
+                   
+                   $counter = $counter + 1;
+               }
+           } else {
+               $realFilename = basename($filename);
+               if ($realFilename != '.' && $realFilename != '..') {
+                   exit('There may be caption file occur!!!');
+               }
            }
        }
+       
+       // Step second: download info deletion
+       $this->downloadFilesService->deleteInfo([
+           ['id', '=', $downloadedFileInfo['id']]
+       ]);
+       
+       // TODO Step third: files clear
+       //rrmdir(env('TORRENT_DOWNLOAD_DIRECTORY'));
+       //rrmdir(env('TORRENT_WATCH_DIRECTORY'));
+       //rrmdir(env('TORRENT_RESUME_DIRECTORY'));
+       //rrmdir(env('TORRENT_TORRENT_DIRECTORY'));
+       
+       // Step final: transmission reload
+       $this->transmission->doRemove();
    }
    
+   /**
+    * Parameters parser
+    * @param string $parameters
+    * @return array
+    */
    public function parseParameters(string $parameters)
    {
        $result = [];
@@ -66,10 +181,13 @@ class Fembed extends FembedUploader
        $torrentDownloadedFileId = $parameterArr[4];
        $torrentDownloadedFileName = $parameterArr[5];
        
-       if (!$torrentAppVersion || !$torrentDownloadedFileLocaltime || !$torrentDownloadDir || !$torrentDownloadedFileHash || !$torrentDownloadedFileId || !$torrentDownloadedFileName) {
-           
-           Log::warning('Parameter error from shell script');
-           
+       if (!$torrentAppVersion
+           || !$torrentDownloadedFileLocaltime
+           || !$torrentDownloadDir
+           || !$torrentDownloadedFileHash
+           || !$torrentDownloadedFileId
+           || !$torrentDownloadedFileName
+           ) {
            return false;
        }
        
@@ -85,11 +203,19 @@ class Fembed extends FembedUploader
        return $result;
    }
    
+   /**
+    * Set file
+    * @param string $file
+    */
    public function doFileSetting($file)
    {
        $this->SetInput($file);
    }
    
+   /**
+    * Set fembed account
+    * @param array $account
+    */
    public function doAccountSetting($account = [])
    {
        if (!$account) {
@@ -99,6 +225,11 @@ class Fembed extends FembedUploader
        $this->SetAccount($account);
    }
    
+   /**
+    * Get fembed account information
+    * @throws \Exception
+    * @return StdClass
+    */
    private function _getFembedAccount()
    {
        $account = config('fembed.account');

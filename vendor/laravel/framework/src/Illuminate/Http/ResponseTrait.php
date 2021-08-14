@@ -4,6 +4,7 @@ namespace Illuminate\Http;
 
 use Exception;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Symfony\Component\HttpFoundation\HeaderBag;
 
 trait ResponseTrait
 {
@@ -48,7 +49,9 @@ trait ResponseTrait
      */
     public function getOriginalContent()
     {
-        return $this->original;
+        $original = $this->original;
+
+        return $original instanceof self ? $original->{__FUNCTION__}() : $original;
     }
 
     /**
@@ -56,7 +59,7 @@ trait ResponseTrait
      *
      * @param  string  $key
      * @param  array|string  $values
-     * @param  bool    $replace
+     * @param  bool  $replace
      * @return $this
      */
     public function header($key, $values, $replace = true)
@@ -69,11 +72,15 @@ trait ResponseTrait
     /**
      * Add an array of headers to the response.
      *
-     * @param  array  $headers
+     * @param  \Symfony\Component\HttpFoundation\HeaderBag|array  $headers
      * @return $this
      */
-    public function withHeaders(array $headers)
+    public function withHeaders($headers)
     {
+        if ($headers instanceof HeaderBag) {
+            $headers = $headers->all();
+        }
+
         foreach ($headers as $key => $value) {
             $this->headers->set($key, $value);
         }
@@ -89,7 +96,7 @@ trait ResponseTrait
      */
     public function cookie($cookie)
     {
-        return call_user_func_array([$this, 'withCookie'], func_get_args());
+        return $this->withCookie(...func_get_args());
     }
 
     /**
@@ -101,12 +108,22 @@ trait ResponseTrait
     public function withCookie($cookie)
     {
         if (is_string($cookie) && function_exists('cookie')) {
-            $cookie = call_user_func_array('cookie', func_get_args());
+            $cookie = cookie(...func_get_args());
         }
 
         $this->headers->setCookie($cookie);
 
         return $this;
+    }
+
+    /**
+     * Get the callback of the response.
+     *
+     * @return string|null
+     */
+    public function getCallback()
+    {
+        return $this->callback ?? null;
     }
 
     /**
@@ -124,6 +141,8 @@ trait ResponseTrait
 
     /**
      * Throws the response in a HttpResponseException instance.
+     *
+     * @return void
      *
      * @throws \Illuminate\Http\Exceptions\HttpResponseException
      */

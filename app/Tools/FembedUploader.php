@@ -25,7 +25,7 @@ class FembedUploader
     public function __construct()
     {
         $this->http = new \GuzzleHttp\Client([
-            'base_uri' => 'https://www.fembed.com/api/',
+            'base_uri' => env('UPLOAD_BASE_URL'),
             'timeout' => 10,
         ]);
         if (!is_dir($this->cache_dir)) {
@@ -52,6 +52,32 @@ class FembedUploader
         $this->last_message = '';
     }
 
+    public function doThumbnailUpload(string $thumbnailFilename, string $videoId)
+    {
+        try {
+            $res = $this->http->post('poster', [
+                'form_params' => [
+                    'client_id' => $this->account['client_id'],
+                    'client_secret' => $this->account['client_secret'],
+                    'file_id' => $videoId,
+                    'poster' => json_encode([
+                        'type' => 'jpg',
+                        'content' => base64_encode(@file_get_contents($thumbnailFilename)),
+                    ]),
+                ],
+            ]);
+            
+            $this->retry = 0;
+            
+            $res = json_decode($res->getBody());
+            
+        } catch (\Exception $e) {
+            $res = (object) ['success' => false, 'data' => $e->getMessage()];
+        }
+
+        return $res;
+    }
+    
     public function Run()
     {
         if (!is_file($this->file)) {

@@ -23,6 +23,10 @@ class Transmission
     public function __construct()
     {
         if (env('APP_ENV') == 'production') {
+            $this->_username = env('TRANSMISSION_USERNAME');
+            
+            $this->_password = env('TRANSMISSION_PASSWORD');
+            
             $this->_transmissionHost = env('TRANSMISSION_HOST');
             
             $this->_transmissionPort = env('TRANSMISSION_PORT');
@@ -131,6 +135,40 @@ class Transmission
                 if ($reply->result != 'success') {
                     Log::info("*** Failed to remove torrent ***\n");
                 }
+            }
+        }
+    }
+    
+    public function doRemoveForce()
+    {
+        $request = [];
+        
+        $request['method'] = 'torrent-get';
+        $request['arguments'] = [];
+        $request['arguments']['fields'] = ['id', 'name', 'doneDate', 'haveValid', 'totalSize'];
+        
+        try {
+            $reply = json_decode($this->doPostRequest($this->_transmissionRPC, json_encode($request)));
+        } catch (\Exception $e) {
+            Log::info("*** Exception: %s\n", $e->getMessage());
+        }
+        
+        $arr = $reply->arguments->torrents;
+        
+        foreach ($arr as $tor)
+        {
+            Log::info(sprintf("Torrent '%s' finished on %s\n", $tor->name, strftime("%Y-%b-%d %H:%M:%S", $tor->doneDate)));
+            
+            $request = array('method' => 'torrent-remove', 'arguments' => ['ids' => [$tor->id]]);
+            
+            try {
+                $reply = json_decode($this->doPostRequest($this->_transmissionRPC, json_encode($request)));
+            } catch (\Exception $e) {
+                Log::info("*** Exception: %s\n", $e->getMessage());
+            }
+            
+            if ($reply->result != 'success') {
+                Log::info("*** Failed to remove torrent ***\n");
             }
         }
     }

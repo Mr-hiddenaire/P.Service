@@ -38,9 +38,9 @@ class Form extends Link implements \ArrayAccess
 
     /**
      * @param \DOMElement $node       A \DOMElement instance
-     * @param string      $currentUri The URI of the page where the form is embedded
-     * @param string      $method     The method to use for the link (if null, it defaults to the method defined by the form)
-     * @param string      $baseHref   The URI of the <base> used for relative links, but not for empty action
+     * @param string|null $currentUri The URI of the page where the form is embedded
+     * @param string|null $method     The method to use for the link (if null, it defaults to the method defined by the form)
+     * @param string|null $baseHref   The URI of the <base> used for relative links, but not for empty action
      *
      * @throws \LogicException if the node is not a button inside a form tag
      */
@@ -203,7 +203,7 @@ class Form extends Link implements \ArrayAccess
         $uri = parent::getUri();
 
         if (!\in_array($this->getMethod(), ['POST', 'PUT', 'DELETE', 'PATCH'])) {
-            $query = parse_url($uri, PHP_URL_QUERY);
+            $query = parse_url($uri, \PHP_URL_QUERY);
             $currentParameters = [];
             if ($query) {
                 parse_str($query, $currentParameters);
@@ -281,7 +281,7 @@ class Form extends Link implements \ArrayAccess
     /**
      * Gets a named field.
      *
-     * @return FormField The field instance
+     * @return FormField|FormField[]|FormField[][] The value of the field
      *
      * @throws \InvalidArgumentException When field is not present in this form
      */
@@ -325,7 +325,7 @@ class Form extends Link implements \ArrayAccess
      *
      * @param string $name The field name
      *
-     * @return FormField The associated Field instance
+     * @return FormField|FormField[]|FormField[][] The value of the field
      *
      * @throws \InvalidArgumentException if the field does not exist
      */
@@ -340,6 +340,8 @@ class Form extends Link implements \ArrayAccess
      * @param string       $name  The field name
      * @param string|array $value The value of the field
      *
+     * @return void
+     *
      * @throws \InvalidArgumentException if the field does not exist
      */
     public function offsetSet($name, $value)
@@ -351,6 +353,8 @@ class Form extends Link implements \ArrayAccess
      * Removes a field from the form.
      *
      * @param string $name The field name
+     *
+     * @return void
      */
     public function offsetUnset($name)
     {

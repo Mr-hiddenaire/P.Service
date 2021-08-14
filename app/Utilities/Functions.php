@@ -105,3 +105,43 @@ function randomNumber($length)
 
     return $randstr;
 }
+
+function rrmdir($dir)
+{
+    if (is_dir($dir)) {
+        $objects = scandir($dir);
+        foreach ($objects as $object) {
+            if ($object != "." && $object != "..") {
+                if (is_dir($dir. DIRECTORY_SEPARATOR .$object) && !is_link($dir."/".$object)) {
+                    rrmdir($dir. DIRECTORY_SEPARATOR .$object);
+                } else {
+                    echo 'deleting file'.$dir.DIRECTORY_SEPARATOR .$object."\n";
+                    unlink($dir. DIRECTORY_SEPARATOR .$object);
+                }
+            }
+        }
+    }
+}
+
+function doSpecialFilenameReformat(string $filename)
+{
+    $specialCharacters = [' ', '\\', '|', '\[', '\]', ];
+    
+    foreach ($specialCharacters as $specialCharacter) {
+        $filename = str_replace($specialCharacter, '\\'.$specialCharacter, $filename);
+    }
+    
+    return stripslashes($filename);
+}
+
+function base64EncodeImage($imageFile)
+{
+    $base64Image = '';
+    
+    $imageInfo = getimagesize($imageFile);
+    $imageData = fread(fopen($imageFile, 'r'), filesize($imageFile));
+    
+    $base64Image = 'data:'.$imageInfo['mime'].';base64,'.base64_encode($imageData);
+    
+    return $base64Image;
+}

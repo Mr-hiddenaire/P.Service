@@ -8,8 +8,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-use App\Jobs\AwsUploader;
-
 use App\Services\SourceFactory\DownloadFileRecordsService;
 
 use App\Constants\Common;
@@ -29,11 +27,13 @@ class Hls implements ShouldQueue
     protected $fullFilenamePath;
     
     protected $downloadFileRecordsService;
-    
+
     /**
      * Create a new job instance.
      *
-     * @return void
+     * @param string $downloadBasePath
+     * @param array $data
+     * @param DownloadFileRecordsService $downloadFileRecordsService
      */
     public function __construct(string $downloadBasePath, array $data, DownloadFileRecordsService $downloadFileRecordsService)
     {
@@ -147,8 +147,6 @@ class Hls implements ShouldQueue
     
     private function doDurationToSecondsInteger(string $duration)
     {
-        $secondsInteger = 0;
-        
         $secondsArr = explode(':', $duration);
         
         $h = intval($secondsArr[0]) ?? 0;
@@ -157,10 +155,8 @@ class Hls implements ShouldQueue
         
         $h = $h*3600;
         $m = $m*60;
-        
-        $secondsInteger = $h + $m + $s;
-        
-        return $secondsInteger;
+
+        return $h + $m + $s;
     }
     
     private function getThumbnail()

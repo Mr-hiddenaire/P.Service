@@ -36,6 +36,10 @@ class Transmission
             $this->_transmissionRPC = 'http://'.$this->_transmissionHost.':'.$this->_transmissionPort.'/'.$this->_transmissionLocation;
             
             $this->_transmissionSessionId = $this->getTransmissionSessionId();
+            
+            $this->_username = env('TRANSMISSION_USERNAME');
+            
+            $this->_password = env('TRANSMISSION_PASSWORD');
         }
     }
     

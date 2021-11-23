@@ -23,10 +23,6 @@ class Transmission
     public function __construct()
     {
         if (env('APP_ENV') == 'production') {
-            $this->_username = env('TRANSMISSION_USERNAME');
-            
-            $this->_password = env('TRANSMISSION_PASSWORD');
-            
             $this->_transmissionHost = env('TRANSMISSION_HOST');
             
             $this->_transmissionPort = env('TRANSMISSION_PORT');

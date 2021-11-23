@@ -344,7 +344,14 @@ class ToolsCommand extends Command
         $info = $downloadedFileRecordService->getInfo([['id', '=', $downloadedFileRecordId]], ['*'], ['id', 'DESC']);
         
         $downloadedPath = env('TORRENT_DOWNLOAD_DIRECTORY');
-        
+
+        $pathInfo = pathinfo($info['video'] ?? '');
+        $filename = $pathInfo['filename'];
+
+        $info['thumbnail'] = DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR.$info['thumbnail'];
+        $info['preview'] = $downloadedPath.DIRECTORY_SEPARATOR.'hls'.DIRECTORY_SEPARATOR.$filename.DIRECTORY_SEPARATOR.$filename.'_preview.mp4';
+        $info['fullDuration'] = '';
+
         \App\Jobs\AwsUploader::dispatch($downloadedPath, $info, $downloadedFileRecordService);
     }
 }

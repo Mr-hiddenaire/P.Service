@@ -101,12 +101,12 @@ class AwsUploader implements ShouldQueue
             
             SendMail::dispatch(2, 'Hls files uploaded successfully', [
                 'body' => 'All Hls files are uploaded successfully ^_^',
-                'uniqueId' => $downloadFilesInfoArr['unique_id'],
-                'name' => $downloadFilesInfoArr['name'],
-                'tags' => $downloadFilesInfoArr['tags'],
-                'duration' => $this->data['fullDuration'],
-                'thumbnail' => $this->data['thumbnail'],
-                'preview' => $this->data['preview'],
+                'uniqueId' => $downloadFilesInfoArr['unique_id'] ?? '',
+                'name' => $downloadFilesInfoArr['name'] ?? '',
+                'tags' => $downloadFilesInfoArr['tags'] ?? '',
+                'duration' => $this->data['fullDuration'] ?? '',
+                'thumbnail' => $this->data['thumbnail'] ?? '',
+                'preview' => $this->data['preview'] ?? '',
                 'preview_url' => env('CF_ENDPOINT').'/hls-bundle/'.$this->filename.'/'.basename($this->data['preview']),
                 'hls_url' => env('CF_ENDPOINT').'/hls-bundle/'.$this->filename.'/'.$this->filename.'.m3u8',
                 'subtitle' => $subtitle,

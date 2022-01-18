@@ -46,6 +46,7 @@ class ToolsCommand extends Command
         {--thumbnail=}
         {--video_id=}
         {--downloaded_file_record_id=}
+        {--op_file=}
         ';
 
     /**
@@ -353,5 +354,38 @@ class ToolsCommand extends Command
         $info['fullDuration'] = '';
 
         \App\Jobs\AwsUploader::dispatch($downloadedPath, $info, $downloadedFileRecordService);
+    }
+
+    private function easyTrans()
+    {
+        $path = '';
+
+        $opFile = $this->option('op_file') ?? '';
+
+        if (!$opFile) {
+            dd('op_file option required');
+        }
+
+        $env = env('APP_ENV');
+
+        if ($env != 'production') {
+            $path = '/Users/Jim/Downloads';
+        }
+
+        $inputFile = $path.DIRECTORY_SEPARATOR.$opFile;
+
+        if (!file_exists($inputFile)) {
+            dd('Input File Does Not Exists');
+        }
+
+        $cmd = "ffmpeg -y -i {$inputFile} -map 0 -c copy {$path}".DIRECTORY_SEPARATOR."op_file.mp4";
+
+        exec($cmd, $output, $return);
+
+        if ($return != 0) {
+            dd($output);
+        } else {
+            dd('Success');
+        }
     }
 }

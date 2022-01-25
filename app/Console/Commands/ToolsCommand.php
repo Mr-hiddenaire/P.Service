@@ -47,6 +47,7 @@ class ToolsCommand extends Command
         {--video_id=}
         {--downloaded_file_record_id=}
         {--op_file=}
+        {--to_gif=1}
         ';
 
     /**
@@ -361,6 +362,7 @@ class ToolsCommand extends Command
         $path = '';
 
         $opFile = $this->option('op_file') ?? '';
+        $toGif = $this->option('to_gif') ?? 0;
 
         if (!$opFile) {
             dd('op_file option required');
@@ -375,12 +377,19 @@ class ToolsCommand extends Command
         $inputFile = $path.DIRECTORY_SEPARATOR.$opFile;
 
         if (!file_exists($inputFile)) {
+            $exampleCmd = 'php artisan tool:cmd --method=easyTrans --op_file=file.ts --to_gif=1';
+            echo "Example Cmd Is `{$exampleCmd}`".PHP_EOL;
             dd('Input File Does Not Exists');
         }
 
         $cmd = "ffmpeg -y -i {$inputFile} -map 0 -c copy {$path}".DIRECTORY_SEPARATOR."op_file.mp4";
 
         exec($cmd, $output, $return);
+
+        if ($toGif) {
+            $toGIFCmd = "ffmpeg -y -i {$path}".DIRECTORY_SEPARATOR."op_file.mp4 -vf \"fps=10,scale=670:370:flags=lanczos\" -c:v pam -f image2pipe - | convert -delay 10 - -loop 0 -layers optimize {$path}".DIRECTORY_SEPARATOR."op_file.gif";
+            exec($toGIFCmd, $outputToGif, $returnToGif);
+        }
 
         if ($return != 0) {
             dd($output);

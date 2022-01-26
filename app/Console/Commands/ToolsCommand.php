@@ -374,11 +374,12 @@ class ToolsCommand extends Command
             $path = '/Users/Jim/Downloads';
         }
 
+        $exampleCmd = 'php artisan tool:cmd --method=easyTrans --op_file=file.ts --to_gif=1';
+        echo "Example Cmd Is `{$exampleCmd}`".PHP_EOL;
+
         $inputFile = $path.DIRECTORY_SEPARATOR.$opFile;
 
         if (!file_exists($inputFile)) {
-            $exampleCmd = 'php artisan tool:cmd --method=easyTrans --op_file=file.ts --to_gif=1';
-            echo "Example Cmd Is `{$exampleCmd}`".PHP_EOL;
             dd('Input File Does Not Exists');
         }
 

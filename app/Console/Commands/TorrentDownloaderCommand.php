@@ -127,7 +127,7 @@ class TorrentDownloaderCommand extends Command
      */
     private function tDownload($rawSource)
     {
-        $resourceHandler = fopen($rawSource['torrent_url'], 'rb');
+        $resourceHandler = fopen(urlencode($rawSource['torrent_url']), 'rb');
         
         $targetHandler = fopen(env('TORRENT_WATCH_DIRECTORY').DIRECTORY_SEPARATOR.pathinfo($rawSource['torrent_path'])['filename'].'.torrent', 'wb');
         
